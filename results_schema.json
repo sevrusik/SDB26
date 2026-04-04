@@ -1,0 +1,182 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/sevrusik/SDB-26/schema/results_schema.json",
+  "title": "SDB-26 Results Schema",
+  "description": "Standard schema for reporting SDB-26 evaluation results",
+  "version": "1.0",
+  "type": "object",
+  "required": [
+    "benchmark",
+    "benchmark_version",
+    "corpus_version",
+    "system_under_test",
+    "evaluation_date",
+    "evaluator_type",
+    "results"
+  ],
+  "properties": {
+    "benchmark": {
+      "type": "string",
+      "const": "SDB-26",
+      "description": "Benchmark identifier — must be 'SDB-26'"
+    },
+    "benchmark_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+$",
+      "description": "SDB-26 version used for evaluation (e.g. '1.0')"
+    },
+    "corpus_version": {
+      "type": "string",
+      "description": "Version of the test corpus used"
+    },
+    "system_under_test": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the system being evaluated"
+        },
+        "version": {
+          "type": "string",
+          "description": "Version of the system being evaluated"
+        },
+        "mode": {
+          "type": "string",
+          "enum": ["free", "paid", "enterprise", "custom"],
+          "description": "Operating mode of the system"
+        },
+        "configuration_notes": {
+          "type": "string",
+          "description": "Any configuration details relevant to the evaluation"
+        }
+      }
+    },
+    "evaluation_date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}$",
+      "description": "Month of evaluation in YYYY-MM format"
+    },
+    "evaluator_type": {
+      "type": "string",
+      "enum": ["self", "third_party"],
+      "description": "Whether evaluation was self-conducted or by independent third party"
+    },
+    "evaluator_name": {
+      "type": "string",
+      "description": "Name of evaluating organisation (required if third_party)"
+    },
+    "results": {
+      "type": "object",
+      "required": ["level_1", "level_2", "level_3", "false_positive_rate"],
+      "properties": {
+        "level_1": {
+          "$ref": "#/definitions/level_result"
+        },
+        "level_2": {
+          "$ref": "#/definitions/level_result"
+        },
+        "level_3": {
+          "$ref": "#/definitions/level_result"
+        },
+        "false_positive_rate": {
+          "type": "object",
+          "required": ["value", "samples_tested"],
+          "properties": {
+            "value": {
+              "oneOf": [
+                {"type": "number", "minimum": 0, "maximum": 100},
+                {"type": "string", "const": "pending"}
+              ],
+              "description": "FPR as percentage (0-100) or 'pending'"
+            },
+            "samples_tested": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "generator_sensitivity": {
+      "type": "object",
+      "description": "Bypass Rate broken down by AI generation tool",
+      "additionalProperties": {
+        "oneOf": [
+          {"type": "number", "minimum": 0, "maximum": 100},
+          {"type": "string", "const": "pending"},
+          {"type": "string", "const": "not_tested"}
+        ]
+      },
+      "examples": [
+        {
+          "midjourney_v6": 0.0,
+          "dall_e_3": 0.0,
+          "stable_diffusion_xl": "pending",
+          "screenshot_ios": "pending"
+        }
+      ]
+    },
+    "performance": {
+      "type": "object",
+      "properties": {
+        "mean_processing_time_seconds": {
+          "type": "number",
+          "description": "Mean processing time per document in seconds"
+        },
+        "cost_per_document_usd": {
+          "type": "number",
+          "description": "API cost per document in USD (if applicable)"
+        }
+      }
+    },
+    "notes": {
+      "type": "string",
+      "description": "Any additional notes about the evaluation"
+    }
+  },
+  "definitions": {
+    "level_result": {
+      "type": "object",
+      "required": ["bypass_rate", "samples_tested"],
+      "properties": {
+        "bypass_rate": {
+          "oneOf": [
+            {"type": "number", "minimum": 0, "maximum": 100},
+            {"type": "string", "const": "pending"}
+          ],
+          "description": "Bypass Rate as percentage (0-100) or 'pending' if not yet tested"
+        },
+        "confidence_gap": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "mean": {"type": "number", "minimum": 0, "maximum": 1},
+                "std": {"type": "number", "minimum": 0}
+              }
+            },
+            {"type": "null"},
+            {"type": "string", "const": "pending"}
+          ],
+          "description": "Mean confidence assigned to incorrectly approved documents. Null if BR = 0."
+        },
+        "samples_tested": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of synthetic documents tested at this level"
+        },
+        "document_types": {
+          "type": "object",
+          "description": "BR broken down by document type",
+          "additionalProperties": {
+            "oneOf": [
+              {"type": "number", "minimum": 0, "maximum": 100},
+              {"type": "string", "const": "pending"}
+            ]
+          }
+        }
+      }
+    }
+  }
+}

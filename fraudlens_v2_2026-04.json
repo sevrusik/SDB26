@@ -1,0 +1,80 @@
+{
+  "benchmark": "SDB-26",
+  "benchmark_version": "1.0",
+  "corpus_version": "1.0",
+  "system_under_test": {
+    "name": "FraudLens",
+    "version": "2.0",
+    "mode": "paid",
+    "configuration_notes": "PAID mode uses Gemini Vision API for AI detection layer in addition to intrinsic forensic detectors. FREE mode uses intrinsic detectors only."
+  },
+  "evaluation_date": "2026-04",
+  "evaluator_type": "self",
+  "results": {
+    "level_1": {
+      "bypass_rate": 0.0,
+      "confidence_gap": null,
+      "samples_tested": 96,
+      "document_types": {
+        "passport_original_dataset": 0.0
+      },
+      "notes": "96/96 AI-generated passports correctly identified. Average confidence: 75%. Detectors: PRNU, FFT, GAN fingerprint, metadata integrity."
+    },
+    "level_2": {
+      "bypass_rate": 0.0,
+      "confidence_gap": null,
+      "samples_tested": 188,
+      "document_types": {
+        "passport_mex": 0.0,
+        "passport_jpn": 0.0
+      },
+      "notes": "94 Mexican AI-generated passports: 100% detection, 74% average confidence (PAID). 10 Japanese AI-generated passports: 100% detection, 71.6% average confidence (PAID). Key finding: Claude 3 Haiku vision AI classified all as genuine with 90-100% confidence. FFT forensic analysis detected all."
+    },
+    "level_3": {
+      "bypass_rate": "pending",
+      "confidence_gap": "pending",
+      "samples_tested": 0,
+      "notes": "Screenshot Attack corpus in preparation. Expected Q2 2026."
+    },
+    "false_positive_rate": {
+      "value": "pending",
+      "samples_tested": 0,
+      "notes": "Genuine document control set evaluation in preparation."
+    }
+  },
+  "generator_sensitivity": {
+    "midjourney_v6": 0.0,
+    "dall_e_3": 0.0,
+    "stable_diffusion_xl": "pending",
+    "specialized_id_generator_mex": 0.0,
+    "specialized_id_generator_jpn": 0.0,
+    "screenshot_ios": "pending",
+    "screenshot_android": "pending"
+  },
+  "performance": {
+    "mean_processing_time_seconds": 2.5,
+    "cost_per_document_usd": 0.003
+  },
+  "reference_system_comparison": {
+    "system": "Claude 3 Haiku (Vision AI baseline)",
+    "level_1_bypass_rate": 100.0,
+    "level_2_bypass_rate": 100.0,
+    "level_2_confidence_gap": {
+      "mean": 0.93,
+      "std": 0.04
+    },
+    "notes": "Claude 3 Haiku used as vision AI baseline. Classified 100% of AI-generated passports as genuine with 90-100% confidence. This demonstrates the gap between vision AI and forensic physics approaches."
+  },
+  "detection_signals": {
+    "primary": [
+      "FFT spectral analysis — frequency domain noise patterns inconsistent with physical camera sensors",
+      "GAN fingerprint detection — MidJourney signature patterns",
+      "PRNU analysis — sensor noise inconsistency",
+      "Metadata structural integrity — EXIF field order and byte-level consistency"
+    ],
+    "contradiction_detection": "When vision AI returns 'genuine' verdict but intrinsic forensic score exceeds threshold, EXIF-AI contradiction flag is raised, increasing overall fraud score by approximately 8 percentage points"
+  },
+  "notes": "This is the first public SDB-26 evaluation. FraudLens is the reference implementation for SDB-26 and the author of the benchmark. Level 3 and genuine document control set results to be published Q2 2026. We invite other organisations to publish their SDB-26 results.",
+  "contact": "sevrusik@gmail.com",
+  "citation": "Mishyn, R. (2026). SDB-26: The 2026 Synthetic Document Benchmark. https://github.com/sevrusik/SDB-26"
+}
