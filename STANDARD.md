@@ -262,3 +262,152 @@ SDB-26 methodology is published under Creative Commons Attribution 4.0 Internati
 The test corpus is not included in this license. Corpus access is provided to verified organisations under separate terms.
 
 Use of the name "SDB-26" to describe non-compliant evaluations or modified methodologies is not permitted.
+
+---
+
+## Appendix A: Generator Classification Matrix
+
+### Tier 1 — Общедоступные инструменты (Level 1 корпус)
+
+*Доступны любому пользователю без специальных знаний*
+
+| Инструмент | Тип | Сложность подделки | Детектируемость |
+|-----------|-----|-------------------|-----------------|
+| Midjourney v6 | Диффузионная модель | Средняя | FFT fingerprint |
+| DALL-E 3 | Диффузионная модель | Средняя | Spectral artifacts |
+| Stable Diffusion XL | Open source | Средняя | GAN/diffusion markers |
+| Adobe Firefly | Коммерческая | Средняя | C2PA present |
+| Canva AI | Коммерческая | Низкая | Visible artifacts |
+| ChatGPT 4o (image) | Мультимодальная | Средняя | Pipeline markers |
+
+**Характеристики Tier 1:**
+- Видимые артефакты при форензическом анализе
+- Отсутствует или базовый EXIF
+- Стандартные спектральные сигнатуры
+- Детектируется стандартными forensic инструментами
+
+---
+
+### Tier 2 — Специализированные инструменты (Level 2 корпус)
+
+*Требуют технических знаний или специального доступа*
+
+| Инструмент | Тип | Сложность подделки | Детектируемость |
+|-----------|-----|-------------------|-----------------|
+| Stable Diffusion + LoRA (ID trained) | Fine-tuned | Высокая | Residual artifacts |
+| ComfyUI + custom workflow | Open source pipeline | Высокая | Pipeline mismatch |
+| Flux.1 | Продвинутая диффузия | Высокая | Frequency anomalies |
+| Специализированные ID генераторы | Закрытые инструменты | Очень высокая | PRNU analysis |
+| FaceSwap + template | Гибридный метод | Высокая | Face-document mismatch |
+| Inpainting (частичная замена) | Редактирование | Очень высокая | ELA analysis |
+
+**Характеристики Tier 2:**
+- Минимальные визуальные артефакты
+- Инъецированные метаданные от реального устройства
+- Убедительная структура файла
+- Требует продвинутого forensic анализа
+
+---
+
+### Tier 3 — Продвинутые техники (Level 3 корпус)
+
+*Структурно обходят стандартные защиты*
+
+| Техника | Механизм обхода | Что обходит | Детектируемость |
+|---------|----------------|-------------|-----------------|
+| Screenshot Attack (iOS) | Новый файл без C2PA | C2PA, EXIF, AI markers | Moiré patterns, double compression |
+| Screenshot Attack (Android) | Новый файл без C2PA | C2PA, EXIF, AI markers | Screen grid artifacts |
+| Print & Rescan | Физический аналоговый разрыв | Все цифровые маркеры | Scanner noise patterns |
+| Screen recording frame | Видео кадр | Метаданные | Compression artifacts |
+| Virtual camera injection | Подмена потока | Liveness detection | Pipeline inconsistency |
+
+**Характеристики Tier 3:**
+- Никаких AI маркеров в метаданных
+- Правдоподобный device fingerprint
+- Полный обход C2PA
+- Детектируется только физическим forensic анализом
+
+---
+
+### Матрица сложности подделки
+
+```
+Сложность      Tier  Инструмент              Время      Стоимость
+──────────────────────────────────────────────────────────────────
+Низкая         1     Canva AI                2 мин      Бесплатно
+Низкая         1     ChatGPT 4o              2 мин      ~$0.10
+Средняя        1     Midjourney v6           5 мин      ~$0.50
+Средняя        1     DALL-E 3               5 мин      ~$0.08
+Высокая        2     SD + LoRA               30 мин     Бесплатно
+Высокая        2     Flux.1                  15 мин     ~$0.20
+Очень высокая  2     ID специализированный   1 час      $5-50
+Структурная    3     Screenshot Attack       1 мин      Бесплатно
+Структурная    3     Print & Rescan          10 мин     ~$0.10
+```
+
+**Ключевой инсайт:** Самые опасные подделки — самые дешёвые. Screenshot Attack стоит $0, занимает 1 минуту, обходит C2PA полностью, и детектируется только физическим forensic анализом.
+
+---
+
+## Appendix B: Detection Methods Matrix
+
+### Что каким методом детектируется
+
+| Метод детекции | Tier 1 | Tier 2 | Tier 3 | Описание |
+|---------------|--------|--------|--------|----------|
+| **Template matching** | ⚠️ Частично | ❌ Нет | ❌ Нет | Проверка соответствия шаблону документа |
+| **EXIF validation** | ⚠️ Частично | ⚠️ Частично | ❌ Нет | Проверка метаданных файла |
+| **C2PA / provenance** | ✅ Да | ✅ Да | ❌ Нет | Цепочка происхождения файла |
+| **Liveness detection** | ⚠️ Частично | ⚠️ Частично | ❌ Нет | Проверка живого присутствия |
+| **Vision AI (Claude/GPT)** | ❌ Нет | ❌ Нет | ❌ Нет | Визуальный анализ содержимого |
+| **GAN fingerprint** | ✅ Да | ⚠️ Частично | ⚠️ Частично | Отпечаток генеративной сети |
+| **FFT spectral analysis** | ✅ Да | ✅ Да | ✅ Да | Анализ частотного домена |
+| **PRNU sensor noise** | ✅ Да | ✅ Да | ✅ Да | Шумовая сигнатура сенсора |
+| **ELA (Error Level Analysis)** | ✅ Да | ✅ Да | ⚠️ Частично | Анализ уровня ошибок сжатия |
+| **Pipeline mismatch** | ✅ Да | ✅ Да | ⚠️ Частично | Несоответствие processing pipeline |
+| **Moiré pattern detection** | ❌ Нет | ❌ Нет | ✅ Да | Интерференция экран-сенсор |
+| **Double compression** | ❌ Нет | ❌ Нет | ✅ Да | Артефакты двойного сжатия |
+| **Scanner stripe detection** | N/A | N/A | ✅ Да | FFT полосы от каретки сканера |
+
+**Легенда:**
+- ✅ Да — надёжно детектирует
+- ⚠️ Частично — детектирует в части случаев
+- ❌ Нет — не детектирует
+
+---
+
+### Критический вывод
+
+```
+Единственные методы детектирующие ВСЕ три уровня:
+✅ FFT spectral analysis
+✅ PRNU sensor noise analysis
+
+Методы слепые ко ВСЕМ уровням:
+❌ Vision AI (Claude 3 Haiku, GPT-4V)
+
+Методы слепые к Level 3 (Screenshot Attack):
+❌ Template matching
+❌ EXIF validation  
+❌ C2PA / provenance
+❌ Liveness detection
+❌ GAN fingerprint (частично)
+```
+
+**Практический вывод для комплаенс команд:**
+
+Если ваш KYC стек не включает FFT спектральный анализ или PRNU анализ — у вас 0% защиты против Level 3 атак. Независимо от качества других компонентов.
+
+---
+
+### Рекомендуемый минимальный стек для production KYC (2026)
+
+```
+Layer 1: Template + EXIF validation    → базовая защита (Tier 1)
+Layer 2: C2PA provenance check         → защита от несложных подделок
+Layer 3: GAN/diffusion fingerprint     → защита от Tier 1-2
+Layer 4: FFT + PRNU forensic physics   → защита от всех уровней включая L3
+Layer 5: Human review для flagged      → финальная проверка
+```
+
+Отсутствие Layer 4 означает структурную слепоту к Screenshot Attack — наиболее доступной и распространённой технике в 2026 году.
