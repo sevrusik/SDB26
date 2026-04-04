@@ -267,147 +267,147 @@ Use of the name "SDB-26" to describe non-compliant evaluations or modified metho
 
 ## Appendix A: Generator Classification Matrix
 
-### Tier 1 — Общедоступные инструменты (Level 1 корпус)
+### Tier 1 — Publicly Available Tools (Level 1 Corpus)
 
-*Доступны любому пользователю без специальных знаний*
+*Accessible to any user without specialist knowledge*
 
-| Инструмент | Тип | Сложность подделки | Детектируемость |
-|-----------|-----|-------------------|-----------------|
-| Midjourney v6 | Диффузионная модель | Средняя | FFT fingerprint |
-| DALL-E 3 | Диффузионная модель | Средняя | Spectral artifacts |
-| Stable Diffusion XL | Open source | Средняя | GAN/diffusion markers |
-| Adobe Firefly | Коммерческая | Средняя | C2PA present |
-| Canva AI | Коммерческая | Низкая | Visible artifacts |
-| ChatGPT 4o (image) | Мультимодальная | Средняя | Pipeline markers |
+| Tool | Type | Forgery Complexity | Detectability |
+|------|------|--------------------|---------------|
+| Midjourney v6 | Diffusion model | Medium | FFT fingerprint |
+| DALL-E 3 | Diffusion model | Medium | Spectral artifacts |
+| Stable Diffusion XL | Open source | Medium | GAN/diffusion markers |
+| Adobe Firefly | Commercial | Medium | C2PA present |
+| Canva AI | Commercial | Low | Visible artifacts |
+| ChatGPT 4o (image) | Multimodal | Medium | Pipeline markers |
 
-**Характеристики Tier 1:**
-- Видимые артефакты при форензическом анализе
-- Отсутствует или базовый EXIF
-- Стандартные спектральные сигнатуры
-- Детектируется стандартными forensic инструментами
-
----
-
-### Tier 2 — Специализированные инструменты (Level 2 корпус)
-
-*Требуют технических знаний или специального доступа*
-
-| Инструмент | Тип | Сложность подделки | Детектируемость |
-|-----------|-----|-------------------|-----------------|
-| Stable Diffusion + LoRA (ID trained) | Fine-tuned | Высокая | Residual artifacts |
-| ComfyUI + custom workflow | Open source pipeline | Высокая | Pipeline mismatch |
-| Flux.1 | Продвинутая диффузия | Высокая | Frequency anomalies |
-| Специализированные ID генераторы | Закрытые инструменты | Очень высокая | PRNU analysis |
-| FaceSwap + template | Гибридный метод | Высокая | Face-document mismatch |
-| Inpainting (частичная замена) | Редактирование | Очень высокая | ELA analysis |
-
-**Характеристики Tier 2:**
-- Минимальные визуальные артефакты
-- Инъецированные метаданные от реального устройства
-- Убедительная структура файла
-- Требует продвинутого forensic анализа
+**Tier 1 Characteristics:**
+- Visible artifacts under forensic analysis
+- Absent or minimal EXIF
+- Standard spectral signatures
+- Detectable by standard forensic tools
 
 ---
 
-### Tier 3 — Продвинутые техники (Level 3 корпус)
+### Tier 2 — Specialised Tools (Level 2 Corpus)
 
-*Структурно обходят стандартные защиты*
+*Require technical knowledge or specialist access*
 
-| Техника | Механизм обхода | Что обходит | Детектируемость |
-|---------|----------------|-------------|-----------------|
-| Screenshot Attack (iOS) | Новый файл без C2PA | C2PA, EXIF, AI markers | Moiré patterns, double compression |
-| Screenshot Attack (Android) | Новый файл без C2PA | C2PA, EXIF, AI markers | Screen grid artifacts |
-| Print & Rescan | Физический аналоговый разрыв | Все цифровые маркеры | Scanner noise patterns |
-| Screen recording frame | Видео кадр | Метаданные | Compression artifacts |
-| Virtual camera injection | Подмена потока | Liveness detection | Pipeline inconsistency |
+| Tool | Type | Forgery Complexity | Detectability |
+|------|------|--------------------|---------------|
+| Stable Diffusion + LoRA (ID trained) | Fine-tuned | High | Residual artifacts |
+| ComfyUI + custom workflow | Open source pipeline | High | Pipeline mismatch |
+| Flux.1 | Advanced diffusion | High | Frequency anomalies |
+| Specialised ID generators | Closed tools | Very high | PRNU analysis |
+| FaceSwap + template | Hybrid method | High | Face-document mismatch |
+| Inpainting (partial replacement) | Editing | Very high | ELA analysis |
 
-**Характеристики Tier 3:**
-- Никаких AI маркеров в метаданных
-- Правдоподобный device fingerprint
-- Полный обход C2PA
-- Детектируется только физическим forensic анализом
+**Tier 2 Characteristics:**
+- Minimal visual artifacts
+- Injected metadata from real device
+- Convincing file structure
+- Requires advanced forensic analysis
 
 ---
 
-### Матрица сложности подделки
+### Tier 3 — Advanced Techniques (Level 3 Corpus)
+
+*Structurally bypass standard defences*
+
+| Technique | Bypass Mechanism | What It Bypasses | Detectability |
+|-----------|-----------------|------------------|---------------|
+| Screenshot Attack (iOS) | New file without C2PA | C2PA, EXIF, AI markers | Moiré patterns, double compression |
+| Screenshot Attack (Android) | New file without C2PA | C2PA, EXIF, AI markers | Screen grid artifacts |
+| Print & Rescan | Physical analog gap | All digital markers | Scanner noise patterns |
+| Screen recording frame | Video frame extraction | Metadata | Compression artifacts |
+| Virtual camera injection | Stream substitution | Liveness detection | Pipeline inconsistency |
+
+**Tier 3 Characteristics:**
+- No AI markers in metadata
+- Plausible device fingerprint from capture device
+- Complete bypass of C2PA chain of custody
+- Detectable only through physical forensic analysis
+
+---
+
+### Forgery Complexity Matrix
 
 ```
-Сложность      Tier  Инструмент              Время      Стоимость
-──────────────────────────────────────────────────────────────────
-Низкая         1     Canva AI                2 мин      Бесплатно
-Низкая         1     ChatGPT 4o              2 мин      ~$0.10
-Средняя        1     Midjourney v6           5 мин      ~$0.50
-Средняя        1     DALL-E 3               5 мин      ~$0.08
-Высокая        2     SD + LoRA               30 мин     Бесплатно
-Высокая        2     Flux.1                  15 мин     ~$0.20
-Очень высокая  2     ID специализированный   1 час      $5-50
-Структурная    3     Screenshot Attack       1 мин      Бесплатно
-Структурная    3     Print & Rescan          10 мин     ~$0.10
+Complexity     Tier  Tool                    Time        Cost
+──────────────────────────────────────────────────────────────
+Low            1     Canva AI                2 min       Free
+Low            1     ChatGPT 4o              2 min       ~$0.10
+Medium         1     Midjourney v6           5 min       ~$0.50
+Medium         1     DALL-E 3                5 min       ~$0.08
+High           2     SD + LoRA               30 min      Free
+High           2     Flux.1                  15 min      ~$0.20
+Very High      2     Specialised ID tool     1 hour      $5-50
+Structural     3     Screenshot Attack       1 min       Free
+Structural     3     Print & Rescan          10 min      ~$0.10
 ```
 
-**Ключевой инсайт:** Самые опасные подделки — самые дешёвые. Screenshot Attack стоит $0, занимает 1 минуту, обходит C2PA полностью, и детектируется только физическим forensic анализом.
+**Key insight:** The most dangerous forgeries are the cheapest. The Screenshot Attack costs $0, takes 1 minute, completely bypasses C2PA, and is detectable only through physical forensic analysis.
 
 ---
 
 ## Appendix B: Detection Methods Matrix
 
-### Что каким методом детектируется
+### What Each Method Detects
 
-| Метод детекции | Tier 1 | Tier 2 | Tier 3 | Описание |
-|---------------|--------|--------|--------|----------|
-| **Template matching** | ⚠️ Частично | ❌ Нет | ❌ Нет | Проверка соответствия шаблону документа |
-| **EXIF validation** | ⚠️ Частично | ⚠️ Частично | ❌ Нет | Проверка метаданных файла |
-| **C2PA / provenance** | ✅ Да | ✅ Да | ❌ Нет | Цепочка происхождения файла |
-| **Liveness detection** | ⚠️ Частично | ⚠️ Частично | ❌ Нет | Проверка живого присутствия |
-| **Vision AI (Claude/GPT)** | ❌ Нет | ❌ Нет | ❌ Нет | Визуальный анализ содержимого |
-| **GAN fingerprint** | ✅ Да | ⚠️ Частично | ⚠️ Частично | Отпечаток генеративной сети |
-| **FFT spectral analysis** | ✅ Да | ✅ Да | ✅ Да | Анализ частотного домена |
-| **PRNU sensor noise** | ✅ Да | ✅ Да | ✅ Да | Шумовая сигнатура сенсора |
-| **ELA (Error Level Analysis)** | ✅ Да | ✅ Да | ⚠️ Частично | Анализ уровня ошибок сжатия |
-| **Pipeline mismatch** | ✅ Да | ✅ Да | ⚠️ Частично | Несоответствие processing pipeline |
-| **Moiré pattern detection** | ❌ Нет | ❌ Нет | ✅ Да | Интерференция экран-сенсор |
-| **Double compression** | ❌ Нет | ❌ Нет | ✅ Да | Артефакты двойного сжатия |
-| **Scanner stripe detection** | N/A | N/A | ✅ Да | FFT полосы от каретки сканера |
+| Detection Method | Tier 1 | Tier 2 | Tier 3 | Description |
+|-----------------|--------|--------|--------|-------------|
+| **Template matching** | ⚠️ Partial | ❌ No | ❌ No | Document template conformity check |
+| **EXIF validation** | ⚠️ Partial | ⚠️ Partial | ❌ No | File metadata verification |
+| **C2PA / provenance** | ✅ Yes | ✅ Yes | ❌ No | File chain of custody |
+| **Liveness detection** | ⚠️ Partial | ⚠️ Partial | ❌ No | Live presence verification |
+| **Vision AI (Claude/GPT)** | ❌ No | ❌ No | ❌ No | Visual content analysis |
+| **GAN fingerprint** | ✅ Yes | ⚠️ Partial | ⚠️ Partial | Generative network signature |
+| **FFT spectral analysis** | ✅ Yes | ✅ Yes | ✅ Yes | Frequency domain analysis |
+| **PRNU sensor noise** | ✅ Yes | ✅ Yes | ✅ Yes | Camera sensor noise signature |
+| **ELA (Error Level Analysis)** | ✅ Yes | ✅ Yes | ⚠️ Partial | Compression error level analysis |
+| **Pipeline mismatch** | ✅ Yes | ✅ Yes | ⚠️ Partial | Processing pipeline inconsistency |
+| **Moiré pattern detection** | ❌ No | ❌ No | ✅ Yes | Screen-sensor interference patterns |
+| **Double compression** | ❌ No | ❌ No | ✅ Yes | Dual compression artifacts |
+| **Scanner stripe detection** | N/A | N/A | ✅ Yes | FFT carriage movement patterns |
 
-**Легенда:**
-- ✅ Да — надёжно детектирует
-- ⚠️ Частично — детектирует в части случаев
-- ❌ Нет — не детектирует
+**Legend:**
+- ✅ Yes — reliably detects
+- ⚠️ Partial — detects in some cases
+- ❌ No — does not detect
 
 ---
 
-### Критический вывод
+### Critical Finding
 
 ```
-Единственные методы детектирующие ВСЕ три уровня:
+Only methods that detect ALL three levels:
 ✅ FFT spectral analysis
 ✅ PRNU sensor noise analysis
 
-Методы слепые ко ВСЕМ уровням:
-❌ Vision AI (Claude 3 Haiku, GPT-4V)
+Methods blind to ALL levels:
+❌ Vision AI (Claude 3 Haiku, GPT-4V, and equivalents)
 
-Методы слепые к Level 3 (Screenshot Attack):
+Methods blind to Level 3 (Screenshot Attack):
 ❌ Template matching
-❌ EXIF validation  
+❌ EXIF validation
 ❌ C2PA / provenance
 ❌ Liveness detection
-❌ GAN fingerprint (частично)
+❌ GAN fingerprint (partial)
 ```
 
-**Практический вывод для комплаенс команд:**
+**Practical implication for compliance teams:**
 
-Если ваш KYC стек не включает FFT спектральный анализ или PRNU анализ — у вас 0% защиты против Level 3 атак. Независимо от качества других компонентов.
+If your KYC stack does not include FFT spectral analysis or PRNU analysis, you have 0% protection against Level 3 attacks — regardless of the quality of other components.
 
 ---
 
-### Рекомендуемый минимальный стек для production KYC (2026)
+### Minimum Recommended Stack for Production KYC (2026)
 
 ```
-Layer 1: Template + EXIF validation    → базовая защита (Tier 1)
-Layer 2: C2PA provenance check         → защита от несложных подделок
-Layer 3: GAN/diffusion fingerprint     → защита от Tier 1-2
-Layer 4: FFT + PRNU forensic physics   → защита от всех уровней включая L3
-Layer 5: Human review для flagged      → финальная проверка
+Layer 1: Template + EXIF validation    → baseline protection (Tier 1)
+Layer 2: C2PA provenance check         → protection against unsophisticated forgeries
+Layer 3: GAN/diffusion fingerprint     → protection against Tier 1-2
+Layer 4: FFT + PRNU forensic physics   → protection against all levels including L3
+Layer 5: Human review for flagged      → final verification
 ```
 
-Отсутствие Layer 4 означает структурную слепоту к Screenshot Attack — наиболее доступной и распространённой технике в 2026 году.
+Absence of Layer 4 means structural blindness to the Screenshot Attack — the most accessible and prevalent technique in 2026.
