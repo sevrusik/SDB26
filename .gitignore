@@ -1,0 +1,5 @@
+# Mac metadata
+._*
+.DS_Store
+__MACOSX/
+.AppleDouble
