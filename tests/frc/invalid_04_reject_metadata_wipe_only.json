@@ -1,0 +1,22 @@
+{
+  "frc_schema_version": "1.0.0",
+  "sdb26_version": "SDB-26-v0.2",
+  "verdict": "FRAUD",
+  "verdict_confidence": 0.78,
+  "sdb26_class": "EDITED",
+  "attack_level": "L2",
+  "primary_codes": [
+    {
+      "code": "FRC-L2-METADATA-WIPE",
+      "confidence": 0.7,
+      "evidence_strength": "strong"
+    }
+  ],
+  "supporting_codes": [],
+  "required_action": "reject",
+  "forensic_note": "Reject cannot be based solely on metadata wipe.",
+  "model_trace": {
+    "detector_version": "doclens-detector-0.9.3",
+    "pipeline_id": "prod-eu-kyc-v2"
+  }
+}

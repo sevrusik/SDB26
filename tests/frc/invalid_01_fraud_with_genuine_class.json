@@ -1,0 +1,22 @@
+{
+  "frc_schema_version": "1.0.0",
+  "sdb26_version": "SDB-26-v0.2",
+  "verdict": "FRAUD",
+  "verdict_confidence": 0.9,
+  "sdb26_class": "GENUINE",
+  "attack_level": "L3",
+  "primary_codes": [
+    {
+      "code": "FRC-L3-MOIRE-PATTERN",
+      "confidence": 0.8,
+      "evidence_strength": "strong"
+    }
+  ],
+  "supporting_codes": [],
+  "required_action": "manual_review",
+  "forensic_note": "Invalid class mapping for FRAUD.",
+  "model_trace": {
+    "detector_version": "doclens-detector-0.9.3",
+    "pipeline_id": "prod-eu-kyc-v2"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "frc_schema_version": "1.0.0",
+  "sdb26_version": "SDB-26-v0.2",
+  "verdict": "INSUFFICIENT",
+  "verdict_confidence": 0.3,
+  "sdb26_class": "INSUFFICIENT",
+  "attack_level": "INF",
+  "primary_codes": [
+    {
+      "code": "FRC-L2-FONT-INCONSISTENCY",
+      "confidence": 0.5,
+      "evidence_strength": "moderate"
+    }
+  ],
+  "supporting_codes": [],
+  "required_action": "recapture_required",
+  "forensic_note": "Should contain INF code.",
+  "model_trace": {
+    "detector_version": "doclens-detector-0.9.3",
+    "pipeline_id": "prod-eu-kyc-v2"
+  }
+}

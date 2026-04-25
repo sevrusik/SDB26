@@ -22,6 +22,13 @@ SDB-26 does not evaluate:
 - Sanctions or PEP screening
 - Transaction monitoring
 
+This standard is complemented by FRC (Forensic Reason Codes) documentation for explainable decision outputs:
+- `docs/FRC_OVERVIEW.md`
+- `docs/FRC_SCHEMA.md`
+- `docs/FRC_CODEBOOK.md`
+- `docs/FRC_ACTION_MATRIX.md`
+- `schemas/frc_schema_v1_0_0.json`
+
 ---
 
 ## 2. Definitions
@@ -196,7 +203,7 @@ The system under test must not be trained or fine-tuned on SDB-26 corpus documen
 
 ## 6. Reporting Format
 
-Results must be reported using the standard JSON schema defined in [SCHEMA/results_schema.json](SCHEMA/results_schema.json).
+Results must be reported using the standard JSON schema defined in [results_schema.json](results_schema.json).
 
 Required fields:
 - benchmark version

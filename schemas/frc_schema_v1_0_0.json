@@ -1,0 +1,198 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sdb26.com/schemas/frc_schema_v1_0_0.json",
+  "title": "Forensic Reason Codes (FRC) Schema v1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "frc_schema_version",
+    "sdb26_version",
+    "verdict",
+    "verdict_confidence",
+    "sdb26_class",
+    "attack_level",
+    "primary_codes",
+    "supporting_codes",
+    "required_action",
+    "forensic_note",
+    "model_trace"
+  ],
+  "properties": {
+    "frc_schema_version": {
+      "type": "string",
+      "pattern": "^1\\.0\\.0$"
+    },
+    "sdb26_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "verdict": {
+      "type": "string",
+      "enum": ["GENUINE", "FRAUD", "INSUFFICIENT"]
+    },
+    "verdict_confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "sdb26_class": {
+      "type": "string",
+      "enum": ["GENUINE", "SYNTHETIC", "SCREENSHOT", "EDITED", "INSUFFICIENT"]
+    },
+    "attack_level": {
+      "type": "string",
+      "enum": ["L1", "L2", "L3", "INF"]
+    },
+    "primary_codes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/codeItem" },
+      "maxItems": 10
+    },
+    "supporting_codes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/codeItem" },
+      "maxItems": 20
+    },
+    "required_action": {
+      "type": "string",
+      "enum": ["approve", "manual_review", "recapture_required", "reject"]
+    },
+    "forensic_note": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "model_trace": {
+      "$ref": "#/$defs/modelTrace"
+    },
+    "decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evaluated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "$defs": {
+    "codeItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "confidence", "evidence_strength"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^FRC-(L1|L2|L3|INF)-[A-Z0-9-]+$"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "evidence_strength": {
+          "type": "string",
+          "enum": ["weak", "moderate", "strong"]
+        }
+      }
+    },
+    "modelTrace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["detector_version", "pipeline_id"],
+      "properties": {
+        "detector_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pipeline_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "verdict": { "const": "FRAUD" } },
+        "required": ["verdict"]
+      },
+      "then": {
+        "properties": {
+          "sdb26_class": {
+            "enum": ["SYNTHETIC", "SCREENSHOT", "EDITED"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "verdict": { "const": "GENUINE" } },
+        "required": ["verdict"]
+      },
+      "then": {
+        "properties": {
+          "sdb26_class": { "const": "GENUINE" },
+          "required_action": { "const": "approve" },
+          "primary_codes": { "maxItems": 0 }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "verdict": { "const": "INSUFFICIENT" } },
+        "required": ["verdict"]
+      },
+      "then": {
+        "properties": {
+          "sdb26_class": { "const": "INSUFFICIENT" },
+          "attack_level": { "const": "INF" },
+          "required_action": { "const": "recapture_required" },
+          "primary_codes": {
+            "minItems": 1,
+            "contains": {
+              "type": "object",
+              "properties": {
+                "code": { "pattern": "^FRC-INF-" }
+              },
+              "required": ["code"]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "not": {
+          "properties": { "verdict": { "const": "GENUINE" } },
+          "required": ["verdict"]
+        }
+      },
+      "then": {
+        "properties": {
+          "primary_codes": { "minItems": 1 }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "required_action": { "const": "reject" },
+          "primary_codes": {
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": { "const": "FRC-L2-METADATA-WIPE" }
+              },
+              "required": ["code"]
+            }
+          }
+        },
+        "required": ["required_action", "primary_codes"]
+      },
+      "then": false
+    }
+  ]
+}

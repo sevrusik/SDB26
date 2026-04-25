@@ -38,6 +38,23 @@ Three metrics that vendor marketing does not report:
 
 ---
 
+## FRC Package (v1.0)
+
+SDB-26 now includes a Forensic Reason Codes (FRC) package for explainable, audit-ready decision outputs.
+
+- Overview: [docs/FRC_OVERVIEW.md](docs/FRC_OVERVIEW.md)
+- Human-readable schema: [docs/FRC_SCHEMA.md](docs/FRC_SCHEMA.md)
+- Code dictionary: [docs/FRC_CODEBOOK.md](docs/FRC_CODEBOOK.md)
+- Action policy mapping: [docs/FRC_ACTION_MATRIX.md](docs/FRC_ACTION_MATRIX.md)
+- JSON Schema: [schemas/frc_schema_v1_0_0.json](schemas/frc_schema_v1_0_0.json)
+- Valid examples: [examples/frc](examples/frc)
+- CI fixtures (valid/invalid): [tests/frc](tests/frc)
+
+Advanced extension draft for agent-to-agent contexts:
+- [docs/FRC_A2A_EXTENSION.md](docs/FRC_A2A_EXTENSION.md) (v0.1.1 clarifications)
+
+---
+
 ## Three Levels of Synthetic Complexity
 
 | Level | Name | Description |
@@ -55,7 +72,7 @@ Three metrics that vendor marketing does not report:
 | Claude 3 Haiku (Vision AI) | 100% | 100% | pending |
 | FraudLens FFT Forensics | 0% | 0% | pending |
 
-Full results: [RESULTS/fraudlens_v2_2026-04.json](RESULTS/fraudlens_v2_2026-04.json)
+Full results: [fraudlens_v2_2026-04.json](fraudlens_v2_2026-04.json)
 
 ---
 
@@ -64,12 +81,13 @@ Full results: [RESULTS/fraudlens_v2_2026-04.json](RESULTS/fraudlens_v2_2026-04.j
 **For compliance teams:**
 1. Request the test corpus: sevrusik@gmail.com
 2. Run your current verification stack against the corpus
-3. Report results using the [standard JSON schema](SCHEMA/results_schema.json)
+3. Report results using the [standard JSON schema](results_schema.json)
 
 **For vendors:**
 1. Read [STANDARD.md](STANDARD.md) for full methodology
 2. Request corpus access for verified organisations
 3. Publish your results — transparency builds trust
+4. Optionally output explainable verdicts using [FRC schema](schemas/frc_schema_v1_0_0.json)
 
 **For researchers:**
 1. Read [METHODOLOGY.md](METHODOLOGY.md)
@@ -84,12 +102,23 @@ Full results: [RESULTS/fraudlens_v2_2026-04.json](RESULTS/fraudlens_v2_2026-04.j
 SDB-26/
 ├── README.md           — This file
 ├── STANDARD.md         — Full standard document
-├── METHODOLOGY.md      — Detailed measurement methodology  
-├── RESULTS/
-│   └── fraudlens_v2_2026-04.json
-├── SCHEMA/
-│   └── results_schema.json
-└── CHANGELOG.md
+├── METHODOLOGY.md      — Detailed measurement methodology
+├── CHANGELOG.md
+├── results_schema.json — Standard benchmark results schema
+├── fraudlens_v2_2026-04.json
+├── docs/
+│   ├── FRC_OVERVIEW.md
+│   ├── FRC_SCHEMA.md
+│   ├── FRC_CODEBOOK.md
+│   ├── FRC_ACTION_MATRIX.md
+│   ├── FRC_TECHNICAL_REFERENCE.md
+│   └── FRC_A2A_EXTENSION.md
+├── schemas/
+│   └── frc_schema_v1_0_0.json
+├── examples/
+│   └── frc/
+└── tests/
+    └── frc/
 ```
 
 ---
@@ -111,6 +140,22 @@ Methodology: Creative Commons Attribution 4.0 International (CC BY 4.0)
 You may use, share, and adapt the methodology with attribution.
 
 Test corpus: Available to verified organisations on request. Not for public distribution.
+
+## Public Draft Disclaimer
+
+This repository is published as an implementation-agnostic measurement framework and reference specification.
+
+It includes:
+- methodology and terminology,
+- schema contracts,
+- reference examples and validation fixtures.
+
+It does not include:
+- client data,
+- institution-specific calibration thresholds,
+- production scoring weights or anti-evasion operational playbooks.
+
+Forensic outputs are probabilistic indicators, not legal determinations.
 
 ---
 

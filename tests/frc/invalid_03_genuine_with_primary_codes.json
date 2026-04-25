@@ -1,0 +1,22 @@
+{
+  "frc_schema_version": "1.0.0",
+  "sdb26_version": "SDB-26-v0.2",
+  "verdict": "GENUINE",
+  "verdict_confidence": 0.92,
+  "sdb26_class": "GENUINE",
+  "attack_level": "L2",
+  "primary_codes": [
+    {
+      "code": "FRC-L2-ELA-DIVERGENCE",
+      "confidence": 0.22,
+      "evidence_strength": "weak"
+    }
+  ],
+  "supporting_codes": [],
+  "required_action": "approve",
+  "forensic_note": "GENUINE must not contain primary suspicious codes.",
+  "model_trace": {
+    "detector_version": "doclens-detector-0.9.3",
+    "pipeline_id": "prod-eu-kyc-v2"
+  }
+}

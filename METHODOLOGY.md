@@ -129,7 +129,9 @@ Recommended calculation order:
 
 ### Step 5: Results File
 
-Complete the JSON results file per the schema in [SCHEMA/results_schema.json](SCHEMA/results_schema.json).
+Complete the JSON results file per the schema in [results_schema.json](results_schema.json).
+
+If your implementation supports explainable decision output, validate forensic payloads against [schemas/frc_schema_v1_0_0.json](schemas/frc_schema_v1_0_0.json) and use examples in `examples/frc/`.
 
 ### Step 6: Publication (Optional)
 

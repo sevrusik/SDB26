@@ -1,0 +1,35 @@
+{
+  "frc_schema_version": "1.0.0",
+  "sdb26_version": "SDB-26-v0.2",
+  "verdict": "FRAUD",
+  "verdict_confidence": 0.91,
+  "sdb26_class": "SCREENSHOT",
+  "attack_level": "L3",
+  "primary_codes": [
+    {
+      "code": "FRC-L3-MOIRE-PATTERN",
+      "confidence": 0.88,
+      "evidence_strength": "strong"
+    },
+    {
+      "code": "FRC-L3-DOUBLE-COMPRESSION",
+      "confidence": 0.81,
+      "evidence_strength": "moderate"
+    }
+  ],
+  "supporting_codes": [
+    {
+      "code": "FRC-L2-METADATA-WIPE",
+      "confidence": 0.42,
+      "evidence_strength": "weak"
+    }
+  ],
+  "required_action": "manual_review",
+  "forensic_note": "Moiré and double compression indicate likely screen recapture.",
+  "model_trace": {
+    "detector_version": "doclens-detector-0.9.3",
+    "pipeline_id": "prod-eu-kyc-v2"
+  },
+  "decision_id": "dec-0001",
+  "evaluated_at": "2026-04-24T18:30:00Z"
+}

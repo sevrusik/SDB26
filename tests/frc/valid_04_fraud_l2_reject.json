@@ -1,0 +1,35 @@
+{
+  "frc_schema_version": "1.0.0",
+  "sdb26_version": "SDB-26-v0.2",
+  "verdict": "FRAUD",
+  "verdict_confidence": 0.86,
+  "sdb26_class": "EDITED",
+  "attack_level": "L2",
+  "primary_codes": [
+    {
+      "code": "FRC-L2-ELA-DIVERGENCE",
+      "confidence": 0.84,
+      "evidence_strength": "strong"
+    },
+    {
+      "code": "FRC-L2-FONT-INCONSISTENCY",
+      "confidence": 0.73,
+      "evidence_strength": "moderate"
+    }
+  ],
+  "supporting_codes": [
+    {
+      "code": "FRC-L2-METADATA-WIPE",
+      "confidence": 0.39,
+      "evidence_strength": "weak"
+    }
+  ],
+  "required_action": "reject",
+  "forensic_note": "Edited text region likely inserted; multiple independent L2 indicators.",
+  "model_trace": {
+    "detector_version": "doclens-detector-0.9.3",
+    "pipeline_id": "prod-eu-kyc-v2"
+  },
+  "decision_id": "dec-0004",
+  "evaluated_at": "2026-04-24T18:33:00Z"
+}

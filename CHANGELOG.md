@@ -9,6 +9,28 @@ Format follows [Semantic Versioning](https://semver.org/):
 
 ---
 
+## [1.0.1] — April 2026
+
+**Documentation and schema extension update (FRC package).**
+
+### Added
+- `docs/FRC_OVERVIEW.md` — entry-point overview for explainable forensic outputs
+- `docs/FRC_SCHEMA.md` — human-readable FRC contract
+- `docs/FRC_CODEBOOK.md` — FRC code dictionary (L1/L2/L3/INF)
+- `docs/FRC_ACTION_MATRIX.md` — policy mapping from evidence to action
+- `docs/FRC_TECHNICAL_REFERENCE.md` — extended technical reference draft
+- `docs/FRC_A2A_EXTENSION.md` — draft extension for A2A submission contexts
+- `schemas/frc_schema_v1_0_0.json` — machine-validatable FRC JSON schema
+- `examples/frc/` — valid reference payloads
+- `tests/frc/` — valid/invalid fixtures for CI validation
+
+### Changed
+- Updated repository links from `SCHEMA/results_schema.json` to `results_schema.json` in core docs.
+- Updated `README.md` repository structure and quick links to include FRC package.
+- Updated `docs/FRC_A2A_EXTENSION.md` to `v0.1.1 clarifications` (policy-conditional `FRC-L0-MODEL-UNDISCLOSED`, privacy note for `FRC-L0-SESSION-ANOMALY`, default `GENUINE + SUSPICIOUS -> ESCALATE`, formal `ABR_strict/ABR_operational`).
+
+---
+
 ## [1.0] — April 2026
 
 **Initial public release.**
@@ -31,7 +53,7 @@ Format follows [Semantic Versioning](https://semver.org/):
 ### Documentation
 - STANDARD.md: Full formal specification
 - METHODOLOGY.md: Detailed evaluation guidance
-- SCHEMA/results_schema.json: JSON schema for results reporting
+- results_schema.json: JSON schema for results reporting
 - README.md: Quick start guide
 
 ---
