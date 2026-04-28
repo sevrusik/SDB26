@@ -66,6 +66,11 @@
       "type": "string",
       "description": "Name of evaluating organisation (required if third_party)"
     },
+    "submission_channel": {
+      "type": "string",
+      "enum": ["api", "x402", "mpp", "agent"],
+      "description": "Submission channel used for the evaluation run (v1.1 preparation field)"
+    },
     "results": {
       "type": "object",
       "required": ["level_1", "level_2", "level_3", "false_positive_rate"],
@@ -95,6 +100,30 @@
               "minimum": 0
             }
           }
+        }
+      }
+    },
+    "compound_attack_rate": {
+      "type": "object",
+      "description": "v1.1 preparation metric for document-layer and agent-layer co-occurrence",
+      "required": ["n", "rate"],
+      "properties": {
+        "n": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of submissions where both document fraud (L1-L3) and L0 risk flags are present"
+        },
+        "rate": {
+          "oneOf": [
+            {"type": "number", "minimum": 0, "maximum": 1},
+            {"type": "null"},
+            {"type": "string", "const": "pending"}
+          ],
+          "description": "Share of total submissions with compound attack characteristics"
+        },
+        "note": {
+          "type": "string",
+          "description": "Optional implementation note (for example, instrumentation status)"
         }
       }
     },

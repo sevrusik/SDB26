@@ -176,6 +176,44 @@ Where:
 - FPR must be reported alongside BR
 - A system optimised only for BR at the expense of FPR is not compliant with SDB-26 reporting standards
 
+### 4.5 Planned v1.1 Agent-layer and Compound Metrics (Preview)
+
+The following metrics are defined as v1.1 planned additions and are non-normative for v1.0 compliance. They are aligned with the FRC A2A extension and intended for early adopters.
+
+**Agent Bypass Rate (ABR_strict):**
+
+```
+ABR_strict = N(L0_high_risk AND compound_verdict = "TRUSTED")
+             / N(L0_high_risk)
+```
+
+**Agent Confidence Gap (ACG):**
+
+```
+ACG = mean(verdict_confidence[i]) for i where:
+  L0_high_risk[i] = true AND compound_verdict[i] = "TRUSTED"
+```
+
+**Chain Depth Rate (CDR):**
+
+```
+CDR[k] = share of submissions with delegation_chain_depth = k
+```
+
+**Signal tiering for v1.1 reporting:**
+- `L0_any`: any L0 signal present
+- `L0_high_risk`: high-risk L0 subset defined by policy (for ABR/ACG denominator)
+
+**Compound Attack Rate (planned):**
+
+```
+compound_attack_rate =
+  N((document_class in {SYNTHETIC, EDITED, SCREENSHOT}) AND L0_any)
+  / N(total submissions)
+```
+
+v1.1 reporting is expected to include BR (document layer), ABR/ACG/CDR (agent layer), and compound attack rate (cross-layer).
+
 ---
 
 ## 5. Evaluation Procedure

@@ -234,3 +234,69 @@ A: The corpus is designed to be representative of the tools and techniques avail
 
 **Q: What happens when new AI generators emerge?**
 A: New generators are added to the corpus in minor version updates (1.x). Results from different minor versions are comparable; the new generators appear as additional rows in Generator Sensitivity.
+
+---
+
+## Submission Channel Constraints
+
+*Added in preparation for SDB-26 v1.1. Reflects agentic payment infrastructure context (AP2, x402, MPP).*
+
+Different submission channels affect which forensic signals are available for analysis. Evaluators should document the submission channel alongside corpus results.
+
+### Traditional KYC API
+Standard REST API submission with multipart file upload. Full forensic signal set available: EXIF metadata, PDF container structure, pixel-level analysis, PRNU. This is the reference channel for SDB-26 baseline results.
+
+### HTTP x402 (Coinbase protocol)
+Documents submitted via HTTP 402 payment-gated endpoints. Key constraint: x402 flows may not preserve end-to-end capture provenance in integration logs. **Impact:** `FRC-L2-METADATA-WIPE` is weakened as a standalone indicator and should be paired with pixel-level signals (FFT, ELA) for reliable classification.
+
+### MPP (Stripe/Tempo Merchant Payment Protocol)
+Stablecoin-native submission channel. Supports both fiat and on-chain settlement. Metadata preservation depends on merchant implementation. **Impact:** evaluators should verify whether EXIF is preserved end-to-end before relying on provenance-based signals. Document channel configuration in the results file.
+
+### Agent-mediated submission (agentic onboarding)
+Documents submitted by an AI agent acting on behalf of a principal. Two additional constraints apply:
+
+1. **Temporal signal availability:** Agent submission pipelines may batch-process documents, introducing artificial delays between file creation and submission. Calibrate `FRC-L0-TEMPORAL-ANOMALY` thresholds by use case.
+2. **Velocity baseline:** Legitimate bulk onboarding agents may have naturally high submission rates. Establish per-use-case velocity baselines before activating `FRC-L0-VELOCITY-FLAG`.
+
+**Recommendation:** add `submission_channel` as a reported field in results JSON (`"api" | "x402" | "mpp" | "agent"`). This enables channel-stratified metrics in v1.1.
+
+---
+
+## Compound Attack Taxonomy
+
+*Added in preparation for SDB-26 v1.1. Addresses simultaneous document-layer and agent-layer attacks.*
+
+SDB-26 v1.0 defines three document attack levels (L1, L2, L3) evaluated independently of submission context. As agentic infrastructure matures, a new attack class emerges: **compound attacks**, where document-layer and agent-layer signals indicate coordinated risk in the same submission.
+
+### Definition
+A compound attack occurs when:
+- The submitted document is SYNTHETIC, EDITED, or SCREENSHOT (L1-L3), **and**
+- The submitting context contains L0 risk flags (for example UNATTESTED, SUSPICIOUS, or broken delegation chain indicators)
+
+### Why This Matters
+In a compound attack, document and agent signals are independently detectable, but risk is underestimated if either layer is evaluated in isolation.
+
+The compound verdict matrix (from FRC A2A Extension v0.1.1) handles this explicitly: any SYNTHETIC / EDITED / SCREENSHOT document defaults to `BLOCK` regardless of agent status.
+
+### Measurement
+Compound attacks are measured as a separate slice in SDB-26 v1.1 results:
+
+```json
+{
+  "compound_attack_rate": {
+    "description": "share of submissions with both L1-L3 document fraud and L0 risk flags",
+    "n": 0,
+    "rate": null,
+    "note": "requires A2A instrumentation"
+  }
+}
+```
+
+This metric is optional in v1.0 reporting and planned as required for v1.1 evaluations that instrument the A2A layer.
+
+### Relationship to Existing Metrics
+- **BR (Bypass Rate)** remains the primary document-layer metric
+- **ABR (Agent Bypass Rate)** is the primary agent-layer metric
+- **Compound Attack Rate** measures cross-layer co-occurrence
+
+When A2A instrumentation is available, evaluators should report all three.

@@ -65,6 +65,11 @@ Format follows [Semantic Versioning](https://semver.org/):
 - Add genuine document control set
 - Publish FPR baseline for FraudLens v2.0
 - Add Stable Diffusion XL generator sensitivity results
+- Formalise ABR / ACG / CDR metric definitions in `STANDARD.md` (promoted from FRC A2A Extension draft)
+- Add `L0_any` vs `L0_high_risk` signal tiering for agent-risk reporting
+- Add two new sections in `METHODOLOGY.md`: submission channel constraints and compound attack taxonomy
+- Add `submission_channel` to results JSON schema for channel-stratified reporting
+- Add `compound_attack_rate` to results schema with BR/ABR linkage
 
 ### [1.2] — Q4 2026 (planned)
 - Extend corpus to include bank statements and invoices
