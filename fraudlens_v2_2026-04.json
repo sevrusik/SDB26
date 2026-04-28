@@ -10,6 +10,7 @@
   },
   "evaluation_date": "2026-04",
   "evaluator_type": "self",
+  "submission_channel": "api",
   "results": {
     "level_1": {
       "bypass_rate": 0.0,
@@ -41,6 +42,11 @@
       "samples_tested": 0,
       "notes": "Genuine document control set evaluation in preparation."
     }
+  },
+  "compound_attack_rate": {
+    "n": 0,
+    "rate": null,
+    "note": "v1.1 preparation field; A2A instrumentation not enabled in this run"
   },
   "generator_sensitivity": {
     "midjourney_v6": 0.0,

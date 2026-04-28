@@ -36,6 +36,19 @@ Three metrics that vendor marketing does not report:
 | **Confidence Gap (CG)** | Mean confidence assigned to incorrectly approved synthetic documents |
 | **Generator Sensitivity (GS)** | BR broken down by AI generation tool |
 
+### v1.1 Planned Extensions (Preparation)
+
+SDB-26 v1.1 planning introduces agent-layer and cross-layer reporting additions:
+
+- **ABR / ACG / CDR** formalization in `STANDARD.md` (planned, non-normative for v1.0)
+- **Signal tiering:** `L0_any` vs `L0_high_risk`
+- **Submission-channel aware reporting:** `submission_channel` in `results_schema.json`
+- **Cross-layer co-occurrence metric:** `compound_attack_rate`
+
+See implementation guidance in `METHODOLOGY.md`:
+- `Submission Channel Constraints`
+- `Compound Attack Taxonomy`
+
 ---
 
 ## FRC Package (v1.0)
@@ -93,6 +106,7 @@ Full results: [fraudlens_v2_2026-04.json](fraudlens_v2_2026-04.json)
 1. Read [METHODOLOGY.md](METHODOLOGY.md)
 2. Contribute via pull request
 3. Propose new document categories or generators
+4. If instrumenting A2A context, report `submission_channel` and `compound_attack_rate` (v1.1 preparation fields)
 
 ---
 
