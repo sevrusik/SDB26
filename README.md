@@ -38,9 +38,9 @@ Three metrics that vendor marketing does not report:
 
 ### v1.1 Planned Extensions (Preparation)
 
-SDB-26 v1.1 planning introduces agent-layer and cross-layer reporting additions:
+SDB-26 v1.1 planning introduces agent-layer and cross-layer reporting additions. These additions are planned and non-normative for v1.0 compliance.
 
-- **ABR / ACG / CDR** formalization in `STANDARD.md` (planned, non-normative for v1.0)
+- **ABR / ACG / CDR** formalization in `STANDARD.md`
 - **Signal tiering:** `L0_any` vs `L0_high_risk`
 - **Submission-channel aware reporting:** `submission_channel` in `results_schema.json`
 - **Cross-layer co-occurrence metric:** `compound_attack_rate`
