@@ -66,6 +66,9 @@ SDB-26 now includes a Forensic Reason Codes (FRC) package for explainable, audit
 Advanced extension draft for agent-to-agent contexts:
 - [docs/FRC_A2A_EXTENSION.md](docs/FRC_A2A_EXTENSION.md) (v0.1.1 clarifications)
 
+Implementation note — how SDB-26 maps onto ENISA *Secure by Design and Default* (consultation playbook):
+- [docs/SDB26_ENISA_SecureByDesign_Mapping_v0.1.md](docs/SDB26_ENISA_SecureByDesign_Mapping_v0.1.md)
+
 ---
 
 ## Three Levels of Synthetic Complexity
