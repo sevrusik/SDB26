@@ -52,6 +52,11 @@
     "midjourney_v6": 0.0,
     "dall_e_3": 0.0,
     "stable_diffusion_xl": "pending",
+    "chatgpt_image_2": "pending",
+    "seedream_5_lite": "pending",
+    "kling_o1_image": "pending",
+    "flux_2": "pending",
+    "nano_banana_2": "pending",
     "specialized_id_generator_mex": 0.0,
     "specialized_id_generator_jpn": 0.0,
     "screenshot_ios": "pending",
@@ -74,7 +79,7 @@
   "detection_signals": {
     "primary": [
       "FFT spectral analysis — frequency domain noise patterns inconsistent with physical camera sensors",
-      "GAN fingerprint detection — MidJourney signature patterns",
+      "GAN fingerprint detection — Midjourney signature patterns",
       "PRNU analysis — sensor noise inconsistency",
       "Metadata structural integrity — EXIF field order and byte-level consistency"
     ],

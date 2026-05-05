@@ -62,7 +62,7 @@ Implementation note — how SDB-26 maps onto ENISA *Secure by Design and Default
 
 | Level | Name | Description |
 |-------|------|-------------|
-| L1 | Standard Generation | DALL-E 3, Midjourney, SD XL — no post-processing |
+| L1 | Standard Generation | DALL-E 3, Midjourney, SD XL, ChatGPT Image 2, Seedream 5 Lite, Kling O1 Image, Flux 2 — no post-processing |
 | L2 | Advanced Diffusion | Fine-tuned models, metadata injection |
 | L3 | Screenshot Attack | Any L1/L2 document captured via screenshot — bypasses C2PA |
 

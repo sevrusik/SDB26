@@ -43,7 +43,7 @@ Codes indicating the document was never produced by a physical device or process
 
 | Code | Signal | Detection method | Notes |
 |------|--------|-----------------|-------|
-| `FRC-L1-FFT-GRID` | Regular frequency grid characteristic of GAN/Diffusion generation algorithms | FFT analysis — periodic peaks in mid-frequency bands (0.1–0.4 cycles/pixel) | Most reliable L1 signal; present in SDXL, SD 1.5, MidJourney outputs |
+| `FRC-L1-FFT-GRID` | Regular frequency grid characteristic of GAN/Diffusion generation algorithms | FFT analysis — periodic peaks in mid-frequency bands (0.1–0.4 cycles/pixel) | Most reliable L1 signal; present in SDXL, SD 1.5, Midjourney outputs |
 | `FRC-L1-GEN-TEXTURE-UNIFORM` | Overly uniform paper texture; absence of natural sensor noise (PRNU analysis negative) | PRNU residual analysis; noise field uniformity scoring | Requires reference PRNU library for claimed device; absence alone is weak |
 | `FRC-L1-SEM-INCOHERENCE` | Logical inconsistency in document data (e.g. document number fails regional checksum validation despite visually perfect typography) | Data validation layer — checksum, date logic, issuing authority format rules | Note: this is a data validation signal, not image forensics. Treat as corroborating evidence, not primary forensic signal |
 | `FRC-L1-ORNAMENT-ANOMALY` | Specific distortions on complex graphical elements (coats of arms, guilloche patterns) characteristic of current generative model limitations | Visual inspection layer (LLM-assisted); pattern matching on known artifact signatures | Model-specific; artifact signatures change with model versions — requires corpus refresh |
@@ -152,7 +152,7 @@ FRC codes are versioned alongside the SDB-26 corpus. New generative model releas
 
 **Current version:** FRC-1.0 (April 2026)  
 **Corpus alignment:** SDB-26-v1.0  
-**Model signatures included:** SDXL 1.0, SD 1.5, MidJourney v6, DALL-E 3, screenshot simulation pipeline
+**Model signatures included:** SDXL 1.0, SD 1.5, Midjourney v6, DALL-E 3, ChatGPT Image 2, Seedream 5 Lite, Kling O1 Image, Flux 2, Nano Banana 2, screenshot simulation pipeline
 
 When a new generative model produces artifacts not covered by existing FRC codes, a new code is proposed via GitHub issue with:
 - Corpus examples (minimum 20 confirmed instances)

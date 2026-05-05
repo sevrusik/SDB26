@@ -61,7 +61,7 @@ Documents produced by general-purpose image generation models without post-proce
 
 | Parameter | Specification |
 |-----------|--------------|
-| Generators | DALL-E 3, Midjourney v6, Stable Diffusion XL (standard config) |
+| Generators | DALL-E 3, Midjourney v6, Stable Diffusion XL, ChatGPT Image 2, Seedream 5 Lite, Kling O1 Image, Flux 2 (standard config) |
 | Document types | Passport (minimum 3 countries), National ID (minimum 2 countries) |
 | Minimum samples | 30 per generator per document type |
 | Post-processing | None permitted |
@@ -321,9 +321,12 @@ Use of the name "SDB-26" to describe non-compliant evaluations or modified metho
 | Midjourney v6 | Diffusion model | Medium | FFT fingerprint |
 | DALL-E 3 | Diffusion model | Medium | Spectral artifacts |
 | Stable Diffusion XL | Open source | Medium | GAN/diffusion markers |
+| ChatGPT Image 2 | Multimodal generator | Medium | Pipeline markers |
+| Seedream 5 Lite | Diffusion model | Medium | Frequency-domain artifacts |
+| Kling O1 Image | Multimodal generator | Medium | Cross-model texture signatures |
 | Adobe Firefly | Commercial | Medium | C2PA present |
 | Canva AI | Commercial | Low | Visible artifacts |
-| ChatGPT 4o (image) | Multimodal | Medium | Pipeline markers |
+| ChatGPT 4o Image | Multimodal | Medium | Pipeline markers |
 
 **Tier 1 Characteristics:**
 - Visible artifacts under forensic analysis
@@ -342,6 +345,8 @@ Use of the name "SDB-26" to describe non-compliant evaluations or modified metho
 | Stable Diffusion + LoRA (ID trained) | Fine-tuned | High | Residual artifacts |
 | ComfyUI + custom workflow | Open source pipeline | High | Pipeline mismatch |
 | Flux.1 | Advanced diffusion | High | Frequency anomalies |
+| Flux 2 | Advanced diffusion | High | Frequency anomalies |
+| Nano Banana 2 | Fine-tuned image generator | High | Residual generation artifacts |
 | Specialised ID generators | Closed tools | Very high | PRNU analysis |
 | FaceSwap + template | Hybrid method | High | Face-document mismatch |
 | Inpainting (partial replacement) | Editing | Very high | ELA analysis |
@@ -380,11 +385,16 @@ Use of the name "SDB-26" to describe non-compliant evaluations or modified metho
 Complexity     Tier  Tool                    Time        Cost
 ──────────────────────────────────────────────────────────────
 Low            1     Canva AI                2 min       Free
-Low            1     ChatGPT 4o              2 min       ~$0.10
+Low            1     ChatGPT 4o Image        2 min       ~$0.10
+Medium         1     ChatGPT Image 2         3 min       ~$0.12
 Medium         1     Midjourney v6           5 min       ~$0.50
 Medium         1     DALL-E 3                5 min       ~$0.08
+Medium         1     Seedream 5 Lite         5 min       ~$0.10
+Medium         1     Kling O1 Image          5 min       ~$0.12
 High           2     SD + LoRA               30 min      Free
 High           2     Flux.1                  15 min      ~$0.20
+High           2     Flux 2                  15 min      ~$0.25
+High           2     Nano Banana 2           20 min      ~$0.20
 Very High      2     Specialised ID tool     1 hour      $5-50
 Structural     3     Screenshot Attack       1 min       Free
 Structural     3     Print & Rescan          10 min      ~$0.10

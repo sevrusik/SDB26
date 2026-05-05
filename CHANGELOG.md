@@ -9,6 +9,30 @@ Format follows [Semantic Versioning](https://semver.org/):
 
 ---
 
+## [1.0.2] — May 2026
+
+**Generator naming normalization and coverage extension update.**
+
+### Added
+- Added current generator coverage in `STANDARD.md` and `README.md` Level 1 references:
+  - ChatGPT Image 2
+  - Seedream 5 Lite
+  - Kling O1 Image
+  - Flux 2
+- Added `Nano Banana 2` and `Flux 2` entries in Tier 2 generator classification and complexity matrix.
+- Added pending generator sensitivity keys in `fraudlens_v2_2026-04.json`:
+  - `chatgpt_image_2`
+  - `seedream_5_lite`
+  - `kling_o1_image`
+  - `flux_2`
+  - `nano_banana_2`
+
+### Changed
+- Normalized naming style to `Midjourney` across technical references and baseline result notes.
+- Harmonized ChatGPT image tool naming in generator matrix (`ChatGPT 4o Image`, `ChatGPT Image 2`).
+
+---
+
 ## [1.0.1] — April 2026
 
 **Documentation and schema extension update (FRC package).**
