@@ -1,3 +1,6 @@
+# Local venv (schema validation)
+.venv/
+
 # Mac metadata
 ._*
 .DS_Store

@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sdb26.com/schemas/frc_a2a_envelope_v0_2_0.json",
+  "title": "FRC A2A Audit Envelope v0.2.0",
+  "description": "Structured audit record for agentic submission contexts. Extends FRC v1.0 with L0 agent/instrumentation signals. See docs/FRC_A2A_EXTENSION.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "a2a_extension_version",
+    "submission_id",
+    "submitted_at",
+    "submission_mode",
+    "agent_id",
+    "chain_depth",
+    "l0_codes",
+    "document_codes",
+    "compound_verdict",
+    "compound_confidence",
+    "frc_payload",
+    "corpus_version"
+  ],
+  "properties": {
+    "a2a_extension_version": {
+      "type": "string",
+      "const": "0.2.0"
+    },
+    "submission_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "submitted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "submission_mode": {
+      "type": "string",
+      "enum": ["human_direct", "agent_submitted", "agent_managed_package"]
+    },
+    "agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "agent_template_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "skills_manifest_hash": {
+      "type": "string",
+      "minLength": 16
+    },
+    "connector_manifest_hash": {
+      "type": "string",
+      "minLength": 16
+    },
+    "agent_assertion": {
+      "type": "string",
+      "description": "Identity or attestation payload (format-agnostic); may be redacted in published fixtures."
+    },
+    "chain_depth": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "principal_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "l0_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^FRC-L0-[A-Z0-9-]+$"
+      }
+    },
+    "document_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^FRC-(L1|L2|L3|INF)-[A-Z0-9-]+$"
+      }
+    },
+    "compound_verdict": {
+      "type": "string",
+      "enum": ["TRUSTED", "REVIEW", "ESCALATE", "BLOCK"]
+    },
+    "agent_verdict": {
+      "type": "string",
+      "enum": ["ATTESTED", "PARTIALLY_ATTESTED", "UNATTESTED", "SUSPICIOUS"]
+    },
+    "compound_confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "hitl_checkpoint_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "frc_payload": {
+      "$ref": "frc_schema_v1_0_0.json"
+    },
+    "instrumentation_trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool_invocations": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/toolInvocation" }
+        },
+        "subagent_handoffs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/subagentHandoff" }
+        }
+      }
+    },
+    "analyst_note": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "corpus_version": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^SDB-26"
+    }
+  },
+  "$defs": {
+    "toolInvocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["seq", "tool_id", "invoked_at"],
+      "properties": {
+        "seq": { "type": "integer", "minimum": 1 },
+        "tool_id": { "type": "string", "minLength": 1 },
+        "connector_id": { "type": "string", "minLength": 1 },
+        "invoked_at": { "type": "string", "format": "date-time" },
+        "declared_permission_scope": { "type": "string", "minLength": 1 },
+        "args_digest": { "type": "string", "minLength": 8 }
+      }
+    },
+    "subagentHandoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from_agent_id", "to_agent_id", "handoff_at"],
+      "properties": {
+        "from_agent_id": { "type": "string", "minLength": 1 },
+        "to_agent_id": { "type": "string", "minLength": 1 },
+        "handoff_at": { "type": "string", "format": "date-time" },
+        "scope_digest": { "type": "string", "minLength": 8 }
+      }
+    }
+  }
+}

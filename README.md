@@ -47,11 +47,16 @@ SDB-26 now includes a Forensic Reason Codes (FRC) package for explainable, audit
 - Code dictionary: [docs/FRC_CODEBOOK.md](docs/FRC_CODEBOOK.md)
 - Action policy mapping: [docs/FRC_ACTION_MATRIX.md](docs/FRC_ACTION_MATRIX.md)
 - JSON Schema: [schemas/frc_schema_v1_0_0.json](schemas/frc_schema_v1_0_0.json)
-- Valid examples: [examples/frc](examples/frc)
-- CI fixtures (valid/invalid): [tests/frc](tests/frc)
+- Valid examples: [examples/frc](examples/frc) — see [examples/frc/README.md](examples/frc/README.md) (Mode A / Mode B walkthrough); includes `a2a_audit_mode_a_human_upload.json`, `a2a_audit_mode_b_escalate_missing_trace.json`, `a2a_audit_mode_b_partial_attestation_review.json`, `a2a_audit_insufficient_unattested_escalate.json`, `a2a_audit_repeated_l0_pattern_block.json`, and `a2a_envelope_example.json`
+- CI fixtures (valid/invalid): [tests/frc](tests/frc) — validated by [scripts/validate_frc_schemas.py](scripts/validate_frc_schemas.py) (see [requirements-dev.txt](requirements-dev.txt))
 
 Advanced extension draft for agent-to-agent contexts:
-- [docs/FRC_A2A_EXTENSION.md](docs/FRC_A2A_EXTENSION.md) (v0.1.1 clarifications)
+- [docs/FRC_A2A_EXTENSION.md](docs/FRC_A2A_EXTENSION.md) (v0.5 — L0-D instrumentation, TCR/HAR, calibration guidance, optional `agent_verdict`, investigator appendix)
+- JSON Schema (audit envelope): [schemas/frc_a2a_envelope_v0_2_0.json](schemas/frc_a2a_envelope_v0_2_0.json)
+- Deployment relationship note: v0.5 now includes a dedicated section mapping FRC A2A controls to deployed agent architectures (including Anthropic `kyc-screener` as public reference context).
+- Deployment mapping companion: [docs/FRC_A2A_DEPLOYMENT_MAPPING.md](docs/FRC_A2A_DEPLOYMENT_MAPPING.md) (`FRC signal -> observability fields -> policy outcomes`)
+- Policy profile template: [examples/a2a_policy_profile_example.json](examples/a2a_policy_profile_example.json) (copy/adapt for ABR/TCR/HAR reporting profiles)
+- Policy profile presets: [examples/a2a_policy_profile_strict.json](examples/a2a_policy_profile_strict.json) and [examples/a2a_policy_profile_balanced.json](examples/a2a_policy_profile_balanced.json)
 
 Implementation note — how SDB-26 maps onto ENISA *Secure by Design and Default* (consultation playbook):
 - [docs/SDB26_ENISA_SecureByDesign_Mapping_v0.1.md](docs/SDB26_ENISA_SecureByDesign_Mapping_v0.1.md)
@@ -118,7 +123,11 @@ SDB-26/
 │   ├── FRC_A2A_EXTENSION.md
 │   └── SDB26_ENISA_SecureByDesign_Mapping_v0.1.md  — ENISA SbD playbook mapping (v0.1)
 ├── schemas/
-│   └── frc_schema_v1_0_0.json
+│   ├── frc_schema_v1_0_0.json
+│   └── frc_a2a_envelope_v0_2_0.json
+├── scripts/
+│   └── validate_frc_schemas.py   — CI: validates tests/frc + examples/frc
+├── requirements-dev.txt          — jsonschema (for the validator script)
 ├── examples/
 │   └── frc/
 └── tests/

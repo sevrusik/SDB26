@@ -1,7 +1,7 @@
 # FRC A2A Extension — Agent Identity Forensics
 ## SDB-26 Extension: Forensic Reason Codes for Agentic Submission Contexts
 
-**Version:** 0.1 (Draft for public comment)  
+**Version:** 0.5 (Draft for public comment)  
 **Status:** Proposed extension to FRC v1.0  
 **Repository:** github.com/sevrusik/SDB-26  
 **Scope:** Measurement framework — implementation-agnostic
@@ -79,6 +79,18 @@ Each link in this chain is a potential attack surface. FRC A2A Extension defines
 2. The delegation chain from principal to submitting agent is unbroken and auditable
 3. The document submitted is consistent with the claimed submission context
 4. The submission behaviour is consistent with legitimate agent operation
+5. Where external data or tools were used, the **instrumentation trace** attributes each material call to an allowed connector/tool scope (see L0-D)
+
+### Submission modes (verifier perspective)
+
+Implementations SHOULD classify each evaluated submission into one of:
+
+| Mode | Description | L0-D expectation |
+|------|-------------|------------------|
+| **A — Human-direct** | End user or analyst uploads evidence; no managed agent owns the session | Instrumentation optional; identity/delegation L0-A/B still apply if the channel asserts an agent |
+| **B — Agent-mediated** | A managed or orchestrated agent assembles the package (e.g. screening workflow, MCP-backed research, multi-step onboarding) | Instrumentation **required** for material external/tool calls: without an attributable trace, treat as `FRC-L0-DATA-PATH-UNATTRIBUTED` per policy |
+
+Document-level FRC (`frc_payload`) always applies to **files and pixels**. L0-D applies to **how the package was produced** — complementary layers.
 
 ---
 
@@ -115,6 +127,26 @@ Apply when institution policy, contract terms, or supervisory requirements manda
 
 Privacy note for `FRC-L0-SESSION-ANOMALY`: evaluate session signals under data minimisation and jurisdictional constraints (for example GDPR/ePrivacy and local supervisory guidance).  
 Only collect and retain fields required for fraud-risk assessment and auditability.
+
+### L0-D: Instrumentation, data path, and human checkpoints
+
+Reference architectures for financial agents (skills + governed connectors + subagent handoffs) imply a measurable layer beyond identity: **what tools ran, with what permissions, and whether human review was recorded before high-risk action.** L0-D codes address gaps in that layer.
+
+| Code | Signal | Measurable indicator | Failure mode |
+|------|--------|---------------------|--------------|
+| `FRC-L0-DATA-PATH-UNATTRIBUTED` | Decision or dossier cannot be tied to verified data/tool provenance | Material factual claims or file assembly steps lack a logged connector/tool attribution, or logs cannot be correlated with `submission_id` | “Trust me” agent output with no auditable path from evidence to conclusion |
+| `FRC-L0-CONNECTOR-OUT-OF-POLICY` | Data source not in institutional allowlist | Tool invocation references an MCP server / API / datastore ID outside published `OperationalConnectorSet` | Shadow data feeds; ungoverned enrichment |
+| `FRC-L0-HANDOFF-UNAUDITED` | Orchestrator delegated to a worker/subagent without audit correlation | Multi-agent flow present (e.g. handoff events) but no paired record: from-id, to-id, time, declared scope | Forged or opaque delegation inside the agent graph |
+| `FRC-L0-TOOL-PERMISSION-VIOLATION` | Tool call outside declared permission set | Invoked `tool_id` not in agent’s bound allowlist for this session, or args imply a capability beyond granted scope | Privilege escalation via tools |
+| `FRC-L0-SECRET-BINDING-UNKNOWN` | Cannot verify workload credential binding | Secret or token used for external access cannot be mapped to attested workload/agent identity (vault binding opaque) | Stolen keys used from unattested process |
+| `FRC-L0-HITL-ASSERTION-MISSING` | High-risk path without recorded human checkpoint | Policy defines mandatory human approval before submit/escalate; no `hitl_checkpoint_id` (or equivalent) in audit trail | Fully automated approval where regulation or policy requires sign-off |
+
+Policy notes:
+
+- **`FRC-L0-HITL-ASSERTION-MISSING`** is **policy-conditional**: apply only where the institution’s control framework or jurisdiction requires a recorded human decision for the action class.
+- **PII and tool arguments:** instrumentation SHOULD store hashes/digests of arguments (`args_digest`) rather than raw payloads where possible; see Open Questions.
+
+**Reproducibility (recommended audit fields, not codes):** `agent_template_id`, `skills_manifest_hash`, and `connector_manifest_hash` (or equivalent) SHOULD be recorded when submissions are produced from versioned agent templates — analogous to forensic packet `generation_context` for synthetic media.
 
 ---
 
@@ -154,11 +186,13 @@ FRC A2A Extension introduces a two-dimensional verdict:
 Default policy sets `GENUINE + SUSPICIOUS -> ESCALATE`.  
 `BLOCK` may be applied as an institution-specific override for high-risk segments or repeated suspicious patterns.
 
+**Mode B note:** For **agent-mediated** submissions, institutions MAY map `FRC-L0-DATA-PATH-UNATTRIBUTED` or `FRC-L0-HANDOFF-UNAUDITED` to `agent_verdict = SUSPICIOUS` (or force `compound_verdict = ESCALATE`) even when the document layer is `GENUINE`, unless explicit policy accepts unattributed tool paths for that product.
+
 ---
 
 ## New Metrics for A2A Contexts
 
-FRC A2A Extension adds three metrics to the SDB-26 measurement framework:
+FRC A2A Extension adds the following metrics to the SDB-26 measurement framework:
 
 ### ABR — Agent Bypass Rate
 
@@ -194,6 +228,30 @@ Where `OperationalBypassSet` must be disclosed explicitly (for example `{TRUSTED
 
 **Interpretation:** Longer chains increase the attack surface for chain forgery and reduce auditability. High CDR may indicate architectural decisions that should be reviewed.
 
+### TCR — Tool Call Coverage Rate
+
+**Definition:** Share of **agent-mediated** submissions where every material external/tool invocation has a log record linking `tool_id` (and, where applicable, `connector_id`) to `submission_id` within the retention window.
+
+```
+TCR = (agent-mediated submissions with full tool attribution)
+      / (total agent-mediated submissions)
+```
+
+**Interpretation:** Low TCR means the environment cannot reconstruct *how* the dossier was built — undermining independent audit and post-incident review. Publish TCR only over windows where `n` meets the sample-size table below.
+
+### HAR — Handoff Audit Rate
+
+**Definition:** Share of multi-agent submissions where each orchestrator→worker handoff has a paired audit record (`from_agent_id`, `to_agent_id`, timestamp, declared scope or scope digest).
+
+```
+HAR = (multi-agent submissions with fully audited handoffs)
+      / (total multi-agent submissions)
+```
+
+**Interpretation:** Low HAR indicates opaque internal delegation — the same class of risk as `FRC-L0-HANDOFF-UNAUDITED`, measured at corpus/system level.
+
+**Publication:** As with ABR, optionally report **HAR_strict** vs **HAR_operational** depending on whether partial handoff logs count as sufficient for the evaluated policy.
+
 ---
 
 ## Minimum Sample Size Requirements
@@ -206,7 +264,7 @@ As with FRC v1.0, A2A metrics are subject to minimum sample size constraints:
 | 20 ≤ n < 50 | Point estimate + 95% CI (Clopper-Pearson) |
 | ≥ 50 | Point estimate + CI mandatory |
 
-A2A contexts often have lower submission volumes than human onboarding flows. It is acceptable to accumulate data over longer windows before publishing ABR/ACG/CDR — but the window duration should be disclosed.
+A2A contexts often have lower submission volumes than human onboarding flows. It is acceptable to accumulate data over longer windows before publishing ABR/ACG/CDR/TCR/HAR — but the window duration should be disclosed.
 
 ---
 
@@ -229,27 +287,55 @@ The INSUFFICIENT class takes on additional significance in A2A contexts:
 
 ## Audit Trail Requirements
 
-For A2A submissions, the audit trail must include:
+**Machine validation:** Conformant audit records MAY be validated with `schemas/frc_a2a_envelope_v0_2_0.json`. The nested `frc_payload` MUST satisfy `schemas/frc_schema_v1_0_0.json`.
+
+For A2A submissions, the audit trail must include the core record below. **Agent-mediated (Mode B)** submissions SHOULD additionally include `instrumentation_trace` when any external tool or connector was used.
 
 ```json
 {
+  "a2a_extension_version": "0.2.0",
   "submission_id": "unique identifier",
   "submitted_at": "ISO-8601",
+  "submission_mode": "human_direct | agent_submitted | agent_managed_package",
   "agent_id": "identifier of submitting agent",
+  "agent_template_id": "optional — e.g. kyc-screener v1",
+  "skills_manifest_hash": "optional — sha256 of bundled skills snapshot",
+  "connector_manifest_hash": "optional — sha256 of .mcp.json or allowlist snapshot",
   "agent_assertion": "the identity claim provided (format-agnostic)",
   "chain_depth": 2,
   "principal_id": "identifier of authorising principal (if verifiable)",
-  "l0_codes": [],
-  "document_codes": [],
+  "l0_codes": ["FRC-L0-DATA-PATH-UNATTRIBUTED"],
+  "document_codes": ["FRC-L1-FFT-GRID"],
   "compound_verdict": "TRUSTED | REVIEW | ESCALATE | BLOCK",
   "compound_confidence": 0.0,
+  "hitl_checkpoint_id": "optional — recorded human approval correlation ID",
   "frc_payload": {
     "verdict": "GENUINE | FRAUD | INSUFFICIENT",
     "sdb26_class": "GENUINE | SYNTHETIC | SCREENSHOT | EDITED | INSUFFICIENT",
     "attack_level": "L1 | L2 | L3 | INF"
   },
+  "instrumentation_trace": {
+    "tool_invocations": [
+      {
+        "seq": 1,
+        "tool_id": "exiftool.read_metadata",
+        "connector_id": "internal.forensics",
+        "invoked_at": "2026-05-06T12:00:01Z",
+        "declared_permission_scope": "metadata_read",
+        "args_digest": "sha256:…"
+      }
+    ],
+    "subagent_handoffs": [
+      {
+        "from_agent_id": "orchestrator-1",
+        "to_agent_id": "kyc-leaf-1",
+        "handoff_at": "2026-05-06T12:00:00Z",
+        "scope_digest": "sha256:…"
+      }
+    ]
+  },
   "analyst_note": "human-readable for audit",
-  "corpus_version": "SDB-26-v1.1-A2A"
+  "corpus_version": "SDB-26-A2A-v0.2"
 }
 ```
 
@@ -277,6 +363,10 @@ Adversary constructs a plausible delegation chain that terminates in a verifiabl
 A legitimately attested agent performs actions outside its declared authority scope, potentially including submitting documents for principals it is not authorised to represent.  
 *Primary codes:* FRC-L0-AUTHORITY-MISMATCH, FRC-L0-PRINCIPAL-ABSENT
 
+**T5 — Instrumentation evasion**  
+Adversary relies on plausible dossier text or stitched files while omitting or tampering with tool/connector logs so reviewers cannot reconstruct data provenance.  
+*Primary codes:* FRC-L0-DATA-PATH-UNATTRIBUTED, FRC-L0-HANDOFF-UNAUDITED, FRC-L0-TOOL-PERMISSION-VIOLATION
+
 ---
 
 ## Relationship to Existing Standards
@@ -285,13 +375,41 @@ This framework is designed to be composable with:
 
 - **W3C Verifiable Credentials** — for principal and agent identity claims
 - **C2PA (Content Provenance and Authenticity)** — for document provenance signals
-- **MCP (Model Context Protocol)** — for agent capability and context disclosure
+- **MCP (Model Context Protocol)** — for governed tool and data access; L0-D treats connector identity and logged invocations as forensic artefacts (not as a substitute for document FRC)
 - **SPIFFE/SPIRE** — for workload identity in infrastructure contexts
 - **OpenID Connect / OAuth 2.0** — for delegation and authority scope
 
 **None of these are required.** The FRC A2A Extension defines what must be measured; institutions choose how to implement the underlying attestation.
 
 Where an institution uses none of these standards, `FRC-L0-AGENT-UNATTESTED` applies by definition. The extension does not mandate a specific attestation technology — but it makes the absence of attestation a measurable, auditable finding.
+
+---
+
+## Relationship to deployed agent architectures
+
+This extension is implementation-agnostic, but it is designed to map cleanly onto real multi-step agent deployments where workflows are assembled from:
+
+- workflow-specific agent templates,
+- governed data/tool connectors,
+- orchestrator-to-worker delegation with auditable handoffs.
+
+A concrete public reference context is Anthropic's financial-services repository and its KYC screening workflow template:
+
+- Anthropic `KYC Screener` agent template (plugin context):  
+  `plugins/agent-plugins/kyc-screener/`
+- Managed deployment cookbook context:  
+  `managed-agent-cookbooks/`
+
+Repository: [https://github.com/anthropics/financial-services](https://github.com/anthropics/financial-services)
+
+How FRC A2A maps in that context:
+
+- `FRC-L0-DATA-PATH-UNATTRIBUTED` aligns with missing connector/tool attribution for material dossier claims.
+- `FRC-L0-HANDOFF-UNAUDITED` aligns with missing correlation for orchestrator/worker delegation events.
+- `FRC-L0-TOOL-PERMISSION-VIOLATION` aligns with calls outside session-bound tool scope.
+- `TCR` and `HAR` provide system-level measurement of the same controls exposed in per-run logs.
+
+This reference is illustrative, not normative. Any equivalent architecture can satisfy FRC A2A requirements if it provides measurable attestation, delegation integrity, and instrumentation traceability.
 
 ---
 
@@ -302,8 +420,96 @@ Where an institution uses none of these standards, `FRC-L0-AGENT-UNATTESTED` app
 3. **Chain depth threshold for CDR:** Is 3 hops the right threshold? Some legitimate architectures may require deeper chains.
 4. **Handling of partially attested chains:** Current framework distinguishes ATTESTED / PARTIALLY_ATTESTED / UNATTESTED. Is finer granularity needed?
 5. **Interaction with existing fraud scoring:** How should L0 codes interact with behavioural fraud scores that operate at the session or account level?
+6. **TCR / HAR thresholds:** Should a minimum acceptable TCR/HAR be normative for certain regulated flows, or left to institution disclosure only?
+7. **What counts as “material” tool invocation:** Excluding low-risk steps (e.g. internal string normalisation) from mandatory logging — can we standardise an exclusion taxonomy?
+8. **PII in instrumentation:** Recommended digests, field redaction lists, and retention caps for `args_digest` and connector payloads — community baseline for cross-border deployments.
 
 Contributions via GitHub issue or pull request welcome.
+
+---
+
+## Calibration Guidance (v0.4 draft)
+
+The following guidance is **non-normative** and intended for cross-team consistency when tuning thresholds before publishing ABR/TCR/HAR.
+
+### 1) Velocity baseline (`FRC-L0-VELOCITY-FLAG`)
+
+- Establish product-specific baseline windows (for example 7-14 days) before enabling hard gating.
+- Segment baselines by flow type (`human_direct`, `agent_submitted`, `agent_managed_package`) and business channel.
+- Start with percentile thresholds (for example P99 submissions/hour per `agent_id`) rather than fixed global limits.
+- Record threshold source in policy docs and review quarterly, especially after onboarding automation changes.
+
+### 2) Material tool invocation taxonomy (for TCR)
+
+Define and publish which calls are **material** for audit attribution:
+
+- **Material (include in TCR denominator):**
+  - external data fetches (MCP/API/database reads that influence decision context),
+  - file transformations that alter submitted evidence package,
+  - rule/policy evaluation services producing decision-critical outputs.
+- **Usually non-material (may be excluded if documented):**
+  - deterministic string normalisation,
+  - presentation formatting steps with no effect on evidence content.
+
+Implementations SHOULD keep an explicit `MaterialToolSet` (or equivalent mapping) versioned alongside the workflow.
+
+### 3) TCR and HAR rollout
+
+- Phase 1 (observe): publish TCR/HAR as diagnostics, no auto-blocking.
+- Phase 2 (soft control): map severe deficits (for example missing handoff audit on multi-agent flow) to `REVIEW`.
+- Phase 3 (hard control): for high-risk products, map policy-defined failures (`FRC-L0-DATA-PATH-UNATTRIBUTED`, repeated `FRC-L0-HANDOFF-UNAUDITED`) to `ESCALATE` or `BLOCK`.
+
+Where `REVIEW` is operationally equivalent to approval in a given flow, disclose this via `ABR_operational` and policy mapping.
+
+---
+
+### 4) Optional `agent_verdict` field in envelope
+
+To make policy routing explicit across implementations, envelope schema `frc_a2a_envelope_v0_2_0.json` supports optional:
+
+```json
+"agent_verdict": "ATTESTED | PARTIALLY_ATTESTED | UNATTESTED | SUSPICIOUS"
+```
+
+This field is advisory and should remain consistent with `l0_codes` and `compound_verdict`.
+
+Suggested consistency checks (implementation-level):
+
+- `agent_verdict = UNATTESTED` should co-occur with at least one attestation/delegation L0 finding.
+- `agent_verdict = SUSPICIOUS` should be explainable by high-risk behavioural/instrumentation L0 findings.
+- `agent_verdict = ATTESTED` with severe L0-D signals should trigger policy review of mapping logic.
+
+---
+
+## Appendix: Investigator walkthrough — Mode A vs Mode B
+
+This appendix orients **human reviewers and auditors** when both a nested `frc_payload` (document physics / metadata) and an **A2A audit envelope** are present.
+
+### Mode A — Human-direct
+
+1. Establish `submission_mode = human_direct` (or equivalent product classification).
+2. Evaluate **document risk from `frc_payload` first** (`verdict`, `sdb26_class`, `primary_codes`, `attack_level`).
+3. Treat **missing `instrumentation_trace`** as expected unless internal policy mandates pipeline logging for all channels — do **not** automatically raise `FRC-L0-DATA-PATH-UNATTRIBUTED` for Mode A without policy.
+4. **`l0_codes` may be empty** when no agent identity is asserted; unresolved agent attestations (`FRC-L0-AGENT-UNATTESTED`, etc.) still map to escalation per the compound verdict matrix.
+
+### Mode B — Agent-mediated
+
+1. Establish `submission_mode = agent_managed_package` (or `agent_submitted` with documented partial instrumentation).
+2. Evaluate **`frc_payload`** as in Mode A — document fraud dominates (`BLOCK`-class outcomes when class is SYNTHETIC/EDITED/SCREENSHOT regardless of agent layer).
+3. In parallel, inspect **`instrumentation_trace`**: tool invocations MUST explain material external facts; handoffs SHOULD be pairwise auditable for multi-agent graphs (aligned with **HAR** in `STANDARD.md` §4.5 preview).
+4. Cross-check **`l0_codes`** and optional **`hitl_checkpoint_id`** against institutional control requirements.
+
+### Reference artefacts
+
+Worked JSON and a checklist table:
+
+- [`examples/frc/README.md`](../examples/frc/README.md) — step-by-step tables and narrative
+- [`examples/frc/a2a_audit_mode_a_human_upload.json`](../examples/frc/a2a_audit_mode_a_human_upload.json) — Mode A (`GENUINE`, no instrumentation block)
+- [`examples/frc/a2a_envelope_example.json`](../examples/frc/a2a_envelope_example.json) — Mode B (`FRAUD` document + tooling / handoffs)
+- [`examples/frc/a2a_audit_insufficient_unattested_escalate.json`](../examples/frc/a2a_audit_insufficient_unattested_escalate.json) — `INSUFFICIENT + UNATTESTED => ESCALATE`
+- [`examples/frc/a2a_audit_repeated_l0_pattern_block.json`](../examples/frc/a2a_audit_repeated_l0_pattern_block.json) — repeated L0 high-risk pattern with policy `BLOCK` override
+
+Envelope schema version remains **`a2a_extension_version`: `0.2.0`** until a breaking envelope revision is published.
 
 ---
 
@@ -313,12 +519,16 @@ Contributions via GitHub issue or pull request welcome.
 |---------|---------|
 | 0.1 | Initial draft. L0 code taxonomy, compound verdict matrix, ABR/ACG/CDR metrics, threat model. |
 | 0.1.1 | Clarifications: policy-conditional handling for `FRC-L0-MODEL-UNDISCLOSED`; privacy note for `FRC-L0-SESSION-ANOMALY`; default `GENUINE + SUSPICIOUS -> ESCALATE`; formalized `ABR_strict` and `ABR_operational`. |
+| 0.2 | L0-D instrumentation and data-path codes; submission modes A/B; TCR and HAR metrics; expanded audit trail (`instrumentation_trace`, template/manifest hashes, HITL correlation); threat actor T5; machine schema `schemas/frc_a2a_envelope_v0_2_0.json`. |
+| 0.3 | Appendix: investigator Mode A vs Mode B walkthrough; `examples/frc/README.md` + Mode A envelope example; validator covers both envelope fixtures. |
+| 0.4 | Added calibration guidance (velocity, MaterialToolSet, TCR/HAR rollout); added redacted Mode B examples for `ESCALATE` and `REVIEW` policy paths. |
+| 0.5 | Added optional envelope guidance for explicit `agent_verdict`; added policy-path fixtures for `INSUFFICIENT + UNATTESTED => ESCALATE` and repeated L0 high-risk pattern => `BLOCK`. |
 
-Next planned version (0.2): worked examples with sample audit trail outputs; calibration data for velocity thresholds.
+Next planned version (0.6): optional machine-readable policy profile examples (`OperationalBypassSet`, `MaterialToolSet`) and confidence calibration cookbook.
 
 ---
 
-*SDB-26 FRC A2A Extension v0.1 — April 2026*  
+*SDB-26 FRC A2A Extension v0.5 — May 2026*  
 *github.com/sevrusik/SDB-26 · sdb26.com*  
 *Implementation-agnostic measurement framework. Not legal advice.*  
 *Published under the same licence as SDB-26.*

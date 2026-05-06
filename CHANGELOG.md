@@ -9,6 +9,82 @@ Format follows [Semantic Versioning](https://semver.org/):
 
 ---
 
+## [1.0.7] — May 2026
+
+**FRC A2A v0.5 policy-path fixtures + optional `agent_verdict` guidance.**
+
+### Added
+- `examples/frc/a2a_audit_insufficient_unattested_escalate.json` — `INSUFFICIENT + UNATTESTED => ESCALATE` reference path.
+- `examples/frc/a2a_audit_repeated_l0_pattern_block.json` — repeated high-risk L0 pattern with policy `BLOCK` override.
+
+### Changed
+- `schemas/frc_a2a_envelope_v0_2_0.json` — added optional `agent_verdict` enum (`ATTESTED | PARTIALLY_ATTESTED | UNATTESTED | SUSPICIOUS`).
+- `docs/FRC_A2A_EXTENSION.md` promoted to v0.5 and expanded with optional `agent_verdict` consistency guidance.
+- `docs/FRC_A2A_EXTENSION.md` now includes `Relationship to deployed agent architectures` with explicit Anthropic `kyc-screener` reference context and L0/TCR/HAR mapping notes.
+- `README.md` and `examples/frc/README.md` updated with new policy-path examples.
+- Added companion note `docs/FRC_A2A_DEPLOYMENT_MAPPING.md` with `FRC signal -> observability fields -> policy outcomes` mapping table and implementation checklist.
+- Added copy-ready policy profile template `examples/a2a_policy_profile_example.json` and linked it from README/deployment mapping note.
+- Added policy profile presets `examples/a2a_policy_profile_strict.json` and `examples/a2a_policy_profile_balanced.json` for strict vs balanced operating models.
+
+---
+
+## [1.0.5] — May 2026
+
+**FRC A2A investigator walkthrough and Mode A envelope example.**
+
+### Added
+- `examples/frc/README.md` — Mode A vs Mode B checklist for investigators; `agent_submitted` note; comparison table.
+- `examples/frc/a2a_audit_mode_a_human_upload.json` — valid envelope (`human_direct`, no `instrumentation_trace`).
+
+### Changed
+- `docs/FRC_A2A_EXTENSION.md` — v **0.3**: appendix linking to examples; versioning table; roadmap 0.4.
+- `scripts/validate_frc_schemas.py` — validates both A2A envelope fixtures under `examples/frc/`.
+
+---
+
+## [1.0.6] — May 2026
+
+**FRC A2A v0.4 calibration guidance + additional Mode B fixtures.**
+
+### Added
+- `examples/frc/a2a_audit_mode_b_escalate_missing_trace.json` — policy path: `GENUINE` document + `FRC-L0-DATA-PATH-UNATTRIBUTED` => `compound_verdict=ESCALATE`.
+- `examples/frc/a2a_audit_mode_b_partial_attestation_review.json` — policy path: partial attestation disclosure gap => `compound_verdict=REVIEW`.
+- `docs/FRC_A2A_EXTENSION.md` calibration section (velocity baseline, MaterialToolSet taxonomy, phased TCR/HAR rollout).
+
+### Changed
+- `scripts/validate_frc_schemas.py` now validates all `examples/frc/a2a_*.json` fixtures (pattern-based discovery).
+- `docs/FRC_A2A_EXTENSION.md` upgraded to v0.4 and version history updated.
+- `examples/frc/README.md` extended with Mode B review/escalate variants.
+
+---
+
+## [1.0.4] — May 2026
+
+**FRC schema CI and STANDARD v1.1 preview metrics (TCR/HAR).**
+
+### Added
+- `scripts/validate_frc_schemas.py` — validates `tests/frc/*`, core `examples/frc/*.json`, and `a2a_envelope_example.json` against canonical schemas.
+- `requirements-dev.txt` — `jsonschema` for local/CI validation.
+- `.github/workflows/frc-validate.yml` — runs the validator on schema/fixture changes.
+
+### Changed
+- `STANDARD.md` §4.5 — documented **TCR** and **HAR** (non-normative v1.1 preview, aligned with FRC A2A v0.2).
+- `README.md` — repository tree includes `schemas/frc_a2a_envelope_v0_2_0.json`, `scripts/`, `requirements-dev.txt`.
+
+---
+
+## [1.0.3] — May 2026
+
+**FRC A2A Extension v0.2 (documentation + envelope schema).**
+
+### Added
+- `schemas/frc_a2a_envelope_v0_2_0.json` — machine-validatable audit envelope (`instrumentation_trace`, submission modes, L0-D readiness).
+- `examples/frc/a2a_envelope_example.json` — sample Mode B audit record with nested valid FRC payload.
+- `docs/FRC_A2A_EXTENSION.md` v0.2: L0-D codes (data path, connectors, handoffs, tool permissions, HITL), submission modes A/B, TCR and HAR metrics, threat actor T5, expanded audit trail example, new open questions.
+- `docs/FRC_CODEBOOK.md` — pointer to L0 codes in the A2A extension.
+
+---
+
 ## [1.0.2] — May 2026
 
 **Generator naming normalization and coverage extension update.**

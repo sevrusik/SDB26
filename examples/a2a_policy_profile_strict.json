@@ -1,0 +1,35 @@
+{
+  "policy_profile_id": "kyc-a2a-strict-regulated",
+  "profile_version": "2026-05-07",
+  "operational_bypass_set": [
+    "TRUSTED"
+  ],
+  "material_tool_set_version": "mts-2026-05",
+  "material_tool_set": [
+    "document.submit",
+    "connector.fetch",
+    "connector.search",
+    "rules.evaluate",
+    "identity.verify_assertion"
+  ],
+  "hard_block_rules": [
+    "FRC-L0-TOOL-PERMISSION-VIOLATION",
+    "repeat(FRC-L0-HANDOFF-UNAUDITED,2,24h)",
+    "repeat(FRC-L0-DATA-PATH-UNATTRIBUTED,2,24h)"
+  ],
+  "escalation_rules": [
+    "FRC-L0-AGENT-UNATTESTED",
+    "FRC-L0-CHAIN-BREAK",
+    "FRC-L0-AUTHORITY-MISMATCH",
+    "FRC-L0-HITL-ASSERTION-MISSING"
+  ],
+  "review_rules": [
+    "FRC-L0-MODEL-UNDISCLOSED"
+  ],
+  "hitl_required_for": [
+    "high_value_onboarding",
+    "sanctions_edge_cases",
+    "cross_border_accounts"
+  ],
+  "notes": "Strict profile for regulated/high-impact workflows where REVIEW is not considered bypass-safe."
+}

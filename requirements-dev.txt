@@ -1,0 +1,2 @@
+# Dev / CI only: JSON Schema validation for FRC and A2A envelope fixtures.
+jsonschema>=4.21.0

@@ -1,0 +1,14 @@
+model_id,display_name,family,access_type,provider,source_url,license,status,sdb26_level,target_samples,run_path,notes
+openai_chatgpt_image_2,ChatGPT Image 2,multimodal_t2i,closed_api,OpenAI,https://platform.openai.com/,commercial_api,planned,L1,60,api,Closed model; keep prompt/response metadata for reproducibility.
+seedream_5_lite,Seedream 5 Lite,diffusion_t2i,closed_api_or_web,ByteDance (provider-dependent),https://www.bytedance.com/,unknown_or_commercial,planned,L1,60,api_or_web,Confirm official endpoint and terms before corpus generation.
+kling_o1_image,Kling O1 Image,multimodal_t2i,closed_api_or_web,Kuaishou Kling,https://klingai.com/,commercial,planned,L1,60,api_or_web,Closed model; include UI/API version snapshot in corpus metadata.
+flux_2,Flux 2,diffusion_t2i,open_or_hosted,Black Forest Labs,https://blackforestlabs.ai/,license_check_required,planned,L1,60,comfyui_or_diffusers,Run locally if weights/license permit; otherwise hosted API.
+nano_banana_2,Nano Banana 2,fine_tuned_t2i,closed_or_unknown,Unknown,https://example.com/,unknown,research,L2,60,tbd,Need authoritative source and licensing before inclusion.
+midjourney_v6,Midjourney v6,diffusion_t2i,closed_saas,Midjourney,https://www.midjourney.com/,commercial,active,L1,60,saas,Existing SDB26 baseline model.
+dall_e_3,DALL-E 3,diffusion_t2i,closed_api,OpenAI,https://platform.openai.com/,commercial_api,active,L1,60,api,Existing SDB26 baseline model.
+stable_diffusion_xl,Stable Diffusion XL,diffusion_t2i,open_weights,Stability AI,https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0,open_with_terms,active,L1,60,diffusers_or_comfyui,Existing SDB26 baseline model.
+flux_1,Flux.1,diffusion_t2i,open_or_hosted,Black Forest Labs,https://blackforestlabs.ai/,license_check_required,active,L2,60,comfyui_or_diffusers,Already referenced in STANDARD.md Tier 2.
+sd15_lora_id,Stable Diffusion 1.5 + LoRA (ID),fine_tuned_t2i,open_weights,Community/Local,https://civitai.com/,varies_by_model,active,L2,60,diffusers_or_comfyui,Pin exact checkpoint hash and LoRA IDs for reproducibility.
+comfyui_custom_pipeline,ComfyUI Custom Workflow,pipeline,local_pipeline,Local,https://github.com/comfyanonymous/ComfyUI,open_source,active,L2,60,comfyui,Use locked workflow json and node versions.
+screenshot_ios_pipeline,iOS Screenshot Recapture,postprocess_attack,local_pipeline,Local,n/a,n/a,active,L3,60,postprocess,Generate from L1/L2 outputs then recapture via iOS path.
+screenshot_android_pipeline,Android Screenshot Recapture,postprocess_attack,local_pipeline,Local,n/a,n/a,active,L3,60,postprocess,Generate from L1/L2 outputs then recapture via Android path.

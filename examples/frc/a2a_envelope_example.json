@@ -1,0 +1,75 @@
+{
+  "a2a_extension_version": "0.2.0",
+  "submission_id": "sub-a2a-example-0001",
+  "submitted_at": "2026-05-06T15:00:00Z",
+  "submission_mode": "agent_managed_package",
+  "agent_id": "managed-kyc-screener-prod",
+  "agent_template_id": "kyc-screener",
+  "skills_manifest_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "connector_manifest_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "agent_assertion": "redacted: workload JWT or VC digest",
+  "chain_depth": 2,
+  "principal_id": "principal-org-42",
+  "l0_codes": ["FRC-L0-MODEL-UNDISCLOSED"],
+  "document_codes": ["FRC-L3-MOIRE-PATTERN", "FRC-L3-DOUBLE-COMPRESSION"],
+  "compound_verdict": "BLOCK",
+  "compound_confidence": 0.93,
+  "hitl_checkpoint_id": "hitl-approval-20260506-001",
+  "frc_payload": {
+    "frc_schema_version": "1.0.0",
+    "sdb26_version": "SDB-26-v0.2",
+    "verdict": "FRAUD",
+    "verdict_confidence": 0.91,
+    "sdb26_class": "SCREENSHOT",
+    "attack_level": "L3",
+    "primary_codes": [
+      {
+        "code": "FRC-L3-MOIRE-PATTERN",
+        "confidence": 0.88,
+        "evidence_strength": "strong"
+      },
+      {
+        "code": "FRC-L3-DOUBLE-COMPRESSION",
+        "confidence": 0.81,
+        "evidence_strength": "moderate"
+      }
+    ],
+    "supporting_codes": [
+      {
+        "code": "FRC-L2-METADATA-WIPE",
+        "confidence": 0.42,
+        "evidence_strength": "weak"
+      }
+    ],
+    "required_action": "manual_review",
+    "forensic_note": "Moiré and double-compression signals indicate likely screen recapture.",
+    "model_trace": {
+      "detector_version": "doclens-detector-0.9.3",
+      "pipeline_id": "prod-eu-kyc-v2"
+    },
+    "decision_id": "dec-example-0001",
+    "evaluated_at": "2026-05-06T15:00:05Z"
+  },
+  "instrumentation_trace": {
+    "tool_invocations": [
+      {
+        "seq": 1,
+        "tool_id": "document.submit",
+        "connector_id": "internal.kyc-gateway",
+        "invoked_at": "2026-05-06T14:59:50Z",
+        "declared_permission_scope": "onboarding_write",
+        "args_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      }
+    ],
+    "subagent_handoffs": [
+      {
+        "from_agent_id": "orchestrator-kyc",
+        "to_agent_id": "leaf-document-check",
+        "handoff_at": "2026-05-06T14:59:45Z",
+        "scope_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+      }
+    ]
+  },
+  "analyst_note": "Illustrative Mode B record: document FRAUD dominates compound verdict.",
+  "corpus_version": "SDB-26-A2A-v0.2"
+}

@@ -1,0 +1,30 @@
+{
+  "policy_profile_id": "kyc-a2a-balanced-ops",
+  "profile_version": "2026-05-07",
+  "operational_bypass_set": [
+    "TRUSTED",
+    "REVIEW"
+  ],
+  "material_tool_set_version": "mts-2026-05-lite",
+  "material_tool_set": [
+    "document.submit",
+    "connector.fetch",
+    "rules.evaluate"
+  ],
+  "hard_block_rules": [
+    "FRC-L0-TOOL-PERMISSION-VIOLATION"
+  ],
+  "escalation_rules": [
+    "repeat(FRC-L0-HANDOFF-UNAUDITED,3,24h)",
+    "repeat(FRC-L0-DATA-PATH-UNATTRIBUTED,3,24h)",
+    "FRC-L0-AGENT-UNATTESTED"
+  ],
+  "review_rules": [
+    "FRC-L0-MODEL-UNDISCLOSED",
+    "FRC-L0-SESSION-ANOMALY"
+  ],
+  "hitl_required_for": [
+    "manual_exception_queue"
+  ],
+  "notes": "Balanced profile for higher-throughput operations where REVIEW can be operationally bypass-equivalent and must be disclosed in ABR_operational."
+}

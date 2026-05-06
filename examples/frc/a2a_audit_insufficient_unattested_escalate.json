@@ -1,0 +1,44 @@
+{
+  "a2a_extension_version": "0.2.0",
+  "submission_id": "sub-insufficient-unattested-0001",
+  "submitted_at": "2026-05-07T11:25:00Z",
+  "submission_mode": "agent_submitted",
+  "agent_id": "unknown-ingestion-bot",
+  "agent_assertion": "missing or unverifiable",
+  "chain_depth": 1,
+  "l0_codes": [
+    "FRC-L0-AGENT-UNATTESTED"
+  ],
+  "document_codes": [
+    "FRC-INF-LOW-RESOLUTION"
+  ],
+  "agent_verdict": "UNATTESTED",
+  "compound_verdict": "ESCALATE",
+  "compound_confidence": 0.74,
+  "frc_payload": {
+    "frc_schema_version": "1.0.0",
+    "sdb26_version": "SDB-26-v0.2",
+    "verdict": "INSUFFICIENT",
+    "verdict_confidence": 0.62,
+    "sdb26_class": "INSUFFICIENT",
+    "attack_level": "INF",
+    "primary_codes": [
+      {
+        "code": "FRC-INF-LOW-RESOLUTION",
+        "confidence": 0.91,
+        "evidence_strength": "strong"
+      }
+    ],
+    "supporting_codes": [],
+    "required_action": "recapture_required",
+    "forensic_note": "Document quality is insufficient for reliable forensic decisioning.",
+    "model_trace": {
+      "detector_version": "doclens-detector-0.9.3",
+      "pipeline_id": "prod-eu-kyc-v2"
+    },
+    "decision_id": "dec-insufficient-unattested-0001",
+    "evaluated_at": "2026-05-07T11:25:15Z"
+  },
+  "analyst_note": "INSUFFICIENT + UNATTESTED path: do not request repeated bot resubmissions until agent attestation is resolved.",
+  "corpus_version": "SDB-26-A2A-v0.2"
+}

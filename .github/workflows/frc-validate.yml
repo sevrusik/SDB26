@@ -1,0 +1,35 @@
+name: FRC schema validation
+
+on:
+  push:
+    paths:
+      - "schemas/**"
+      - "tests/frc/**"
+      - "examples/frc/**"
+      - "scripts/validate_frc_schemas.py"
+      - "requirements-dev.txt"
+      - ".github/workflows/frc-validate.yml"
+  pull_request:
+    paths:
+      - "schemas/**"
+      - "tests/frc/**"
+      - "examples/frc/**"
+      - "scripts/validate_frc_schemas.py"
+      - "requirements-dev.txt"
+      - ".github/workflows/frc-validate.yml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dev dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Validate FRC + A2A envelope fixtures
+        run: python scripts/validate_frc_schemas.py

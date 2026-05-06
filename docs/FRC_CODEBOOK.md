@@ -27,6 +27,10 @@
 - `FRC-INF-PARTIAL-DOCUMENT` — key regions/features missing from frame.
 - `FRC-INF-GLARE-OBSTRUCTION` — glare obscures important security features.
 
+## L0 — Agent / submission context (A2A extension)
+
+Agent-layer and instrumentation codes (`FRC-L0-*`) are defined in [FRC_A2A_EXTENSION.md](FRC_A2A_EXTENSION.md) (not in the core FRC v1.0 code namespace validated by `frc_schema_v1_0_0.json`).
+
 ## Notes
 
 - Codes are probabilistic signals, not legal determinations.

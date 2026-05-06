@@ -1,0 +1,41 @@
+{
+  "a2a_extension_version": "0.2.0",
+  "submission_id": "sub-repeated-l0-0009",
+  "submitted_at": "2026-05-07T11:40:00Z",
+  "submission_mode": "agent_managed_package",
+  "agent_id": "managed-kyc-screener-prod",
+  "agent_template_id": "kyc-screener",
+  "skills_manifest_hash": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+  "connector_manifest_hash": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+  "agent_assertion": "redacted: valid workload assertion digest",
+  "chain_depth": 3,
+  "principal_id": "principal-org-91",
+  "l0_codes": [
+    "FRC-L0-HANDOFF-UNAUDITED",
+    "FRC-L0-DATA-PATH-UNATTRIBUTED"
+  ],
+  "document_codes": [],
+  "agent_verdict": "SUSPICIOUS",
+  "compound_verdict": "BLOCK",
+  "compound_confidence": 0.81,
+  "frc_payload": {
+    "frc_schema_version": "1.0.0",
+    "sdb26_version": "SDB-26-v0.2",
+    "verdict": "GENUINE",
+    "verdict_confidence": 0.85,
+    "sdb26_class": "GENUINE",
+    "attack_level": "L1",
+    "primary_codes": [],
+    "supporting_codes": [],
+    "required_action": "approve",
+    "forensic_note": "No document-layer manipulation indicators detected.",
+    "model_trace": {
+      "detector_version": "doclens-detector-0.9.3",
+      "pipeline_id": "prod-eu-kyc-v2"
+    },
+    "decision_id": "dec-repeated-l0-0009",
+    "evaluated_at": "2026-05-07T11:40:20Z"
+  },
+  "analyst_note": "Illustrative high-risk override: repeated L0-D pattern over prior sessions maps to BLOCK under institution policy.",
+  "corpus_version": "SDB-26-A2A-v0.2"
+}

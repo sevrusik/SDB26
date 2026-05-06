@@ -1,0 +1,33 @@
+{
+  "a2a_extension_version": "0.2.0",
+  "submission_id": "sub-mode-a-example-0001",
+  "submitted_at": "2026-05-07T10:15:00Z",
+  "submission_mode": "human_direct",
+  "agent_id": "channel:mobile-selfie-flow",
+  "agent_assertion": "not applicable — end-user session only; no managed agent attestation",
+  "chain_depth": 0,
+  "l0_codes": [],
+  "document_codes": [],
+  "compound_verdict": "TRUSTED",
+  "compound_confidence": 0.89,
+  "frc_payload": {
+    "frc_schema_version": "1.0.0",
+    "sdb26_version": "SDB-26-v0.2",
+    "verdict": "GENUINE",
+    "verdict_confidence": 0.89,
+    "sdb26_class": "GENUINE",
+    "attack_level": "L1",
+    "primary_codes": [],
+    "supporting_codes": [],
+    "required_action": "approve",
+    "forensic_note": "No suspicious forensic indicators detected.",
+    "model_trace": {
+      "detector_version": "doclens-detector-0.9.3",
+      "pipeline_id": "prod-eu-kyc-v2"
+    },
+    "decision_id": "dec-mode-a-0001",
+    "evaluated_at": "2026-05-07T10:15:30Z"
+  },
+  "analyst_note": "Mode A: human uploads document from mobile; no instrumentation_trace required. Empty l0_codes when no agent identity layer is asserted.",
+  "corpus_version": "SDB-26-A2A-v0.2"
+}

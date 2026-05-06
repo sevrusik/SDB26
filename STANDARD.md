@@ -200,6 +200,24 @@ ACG = mean(verdict_confidence[i]) for i where:
 CDR[k] = share of submissions with delegation_chain_depth = k
 ```
 
+**Tool Call Coverage Rate (TCR)** — agent-mediated submissions only (see FRC A2A Extension, submission Mode B):
+
+```
+TCR = N(agent-mediated submissions with full tool attribution)
+      / N(total agent-mediated submissions)
+```
+
+Where “full tool attribution” means every material external/tool invocation is logged with `tool_id`, correlatable `submission_id`, and (where applicable) `connector_id`, per institution policy.
+
+**Handoff Audit Rate (HAR)** — multi-agent flows:
+
+```
+HAR = N(multi-agent submissions with fully audited handoffs)
+      / N(total multi-agent submissions)
+```
+
+Where a “fully audited handoff” includes `from_agent_id`, `to_agent_id`, timestamp, and declared scope or `scope_digest`. Institutions MAY report **HAR_strict** vs **HAR_operational** depending on whether partial logs count as sufficient.
+
 **Signal tiering for v1.1 reporting:**
 - `L0_any`: any L0 signal present
 - `L0_high_risk`: high-risk L0 subset defined by policy (for ABR/ACG denominator)
@@ -212,7 +230,7 @@ compound_attack_rate =
   / N(total submissions)
 ```
 
-v1.1 reporting is expected to include BR (document layer), ABR/ACG/CDR (agent layer), and compound attack rate (cross-layer).
+v1.1 reporting is expected to include BR (document layer), ABR/ACG/CDR/TCR/HAR (agent and instrumentation layer where applicable), and compound attack rate (cross-layer). TCR and HAR apply when submissions are classified as agent-mediated per the A2A extension; omit with justification if the evaluated flow has no agent instrumentation.
 
 ---
 

@@ -131,7 +131,8 @@ Recommended calculation order:
 
 Complete the JSON results file per the schema in [results_schema.json](results_schema.json).
 
-If your implementation supports explainable decision output, validate forensic payloads against [schemas/frc_schema_v1_0_0.json](schemas/frc_schema_v1_0_0.json) and use examples in `examples/frc/`.
+If your implementation supports explainable decision output, validate forensic payloads against [schemas/frc_schema_v1_0_0.json](schemas/frc_schema_v1_0_0.json) and use examples in `examples/frc/`.  
+This repository ships [scripts/validate_frc_schemas.py](scripts/validate_frc_schemas.py) (with [requirements-dev.txt](requirements-dev.txt)) to re-check `tests/frc/` fixtures and the A2A envelope example in CI or locally.
 
 ### Step 6: Publication (Optional)
 
@@ -276,7 +277,7 @@ A compound attack occurs when:
 ### Why This Matters
 In a compound attack, document and agent signals are independently detectable, but risk is underestimated if either layer is evaluated in isolation.
 
-The compound verdict matrix (from FRC A2A Extension v0.1.1) handles this explicitly: any SYNTHETIC / EDITED / SCREENSHOT document defaults to `BLOCK` regardless of agent status.
+The compound verdict matrix (from FRC A2A Extension v0.3) handles this explicitly: any SYNTHETIC / EDITED / SCREENSHOT document defaults to `BLOCK` regardless of agent status.
 
 ### Measurement
 Compound attacks are measured as a separate slice in SDB-26 v1.1 results:

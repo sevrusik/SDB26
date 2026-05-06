@@ -1,0 +1,39 @@
+{
+  "a2a_extension_version": "0.2.0",
+  "submission_id": "sub-mode-b-escalate-0001",
+  "submitted_at": "2026-05-07T10:40:00Z",
+  "submission_mode": "agent_managed_package",
+  "agent_id": "managed-kyc-screener-prod",
+  "agent_template_id": "kyc-screener",
+  "skills_manifest_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "connector_manifest_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+  "agent_assertion": "redacted: valid workload assertion digest",
+  "chain_depth": 2,
+  "principal_id": "principal-org-84",
+  "l0_codes": [
+    "FRC-L0-DATA-PATH-UNATTRIBUTED"
+  ],
+  "document_codes": [],
+  "compound_verdict": "ESCALATE",
+  "compound_confidence": 0.78,
+  "frc_payload": {
+    "frc_schema_version": "1.0.0",
+    "sdb26_version": "SDB-26-v0.2",
+    "verdict": "GENUINE",
+    "verdict_confidence": 0.86,
+    "sdb26_class": "GENUINE",
+    "attack_level": "L1",
+    "primary_codes": [],
+    "supporting_codes": [],
+    "required_action": "approve",
+    "forensic_note": "Document-level forensic checks do not indicate manipulation.",
+    "model_trace": {
+      "detector_version": "doclens-detector-0.9.3",
+      "pipeline_id": "prod-eu-kyc-v2"
+    },
+    "decision_id": "dec-mode-b-escalate-0001",
+    "evaluated_at": "2026-05-07T10:40:25Z"
+  },
+  "analyst_note": "Mode B escalate path: document looks genuine, but dossier contains claims not attributable to recorded tool/connector events.",
+  "corpus_version": "SDB-26-A2A-v0.2"
+}
