@@ -3,7 +3,7 @@
 
 **Version:** 0.5 (Draft for public comment)  
 **Status:** Proposed extension to FRC v1.0  
-**Repository:** github.com/sevrusik/SDB-26  
+**Repository:** github.com/sevrusik/SDB26  
 **Scope:** Measurement framework — implementation-agnostic
 
 ---
@@ -413,6 +413,16 @@ This reference is illustrative, not normative. Any equivalent architecture can s
 
 ---
 
+## Experimental continuity track
+
+Exploratory controls for autonomous/multi-agent failure modes are maintained separately to preserve core standard stability:
+
+- `docs/FRC_A2A_EXPERIMENTAL_v0_6.md`
+
+This track is non-normative and intentionally outside the v1.0.x conformance contract.
+
+---
+
 ## Open Questions (Seeking Community Input)
 
 1. **Threshold for FRC-L0-TEMPORAL-ANOMALY:** What is the appropriate time delta threshold between document creation and submission? 30 seconds is proposed; domain practitioners may have evidence for different values.
@@ -529,6 +539,6 @@ Next planned version (0.6): optional machine-readable policy profile examples (`
 ---
 
 *SDB-26 FRC A2A Extension v0.5 — May 2026*  
-*github.com/sevrusik/SDB-26 · sdb26.com*  
+*github.com/sevrusik/SDB26 · sdb26.com*  
 *Implementation-agnostic measurement framework. Not legal advice.*  
 *Published under the same licence as SDB-26.*

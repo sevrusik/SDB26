@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SDB-26 Standard Page</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #111827;
+      --muted: #4b5563;
+      --line: #e5e7eb;
+      --accent: #1d4ed8;
+      --code-bg: #f3f4f6;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 28px;
+    }
+    .github-btn {
+      position: fixed;
+      top: 14px;
+      right: 16px;
+      z-index: 1000;
+      display: inline-block;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+    .github-btn:hover {
+      text-decoration: none;
+      background: #f8fbff;
+    }
+    nav {
+      position: sticky;
+      top: 16px;
+      align-self: start;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px 14px 10px;
+      background: #fafafa;
+    }
+    nav h2 {
+      margin: 0 0 10px;
+      font-size: 14px;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    nav ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+    nav li { margin: 6px 0; }
+    nav a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    nav a:hover { text-decoration: underline; }
+    main {
+      min-width: 0;
+    }
+    h1 {
+      font-size: 34px;
+      line-height: 1.2;
+      margin: 0 0 8px;
+    }
+    .subtitle {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+    h2 {
+      margin-top: 34px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+      font-size: 24px;
+    }
+    p { margin: 10px 0; }
+    .hero {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 18px 18px;
+      background: linear-gradient(180deg, #f8fbff, #ffffff);
+    }
+    .hero strong {
+      font-size: 20px;
+      display: block;
+      margin-bottom: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 15px;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 10px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #f9fafb;
+      font-weight: 600;
+    }
+    ul {
+      margin-top: 8px;
+    }
+    code {
+      background: var(--code-bg);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 1px 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 0.92em;
+    }
+    .muted { color: var(--muted); }
+    .footer-note {
+      margin-top: 24px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    @media (max-width: 980px) {
+      .wrap {
+        grid-template-columns: 1fr;
+      }
+      nav {
+        position: relative;
+        top: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="github-btn" href="https://github.com/sevrusik/SDB26" target="_blank" rel="noopener noreferrer">GitHub</a>
+  <div class="wrap">
+    <nav aria-label="Table of contents">
+      <h2>Table of Contents</h2>
+      <ul>
+        <li><a href="#hero">Hero</a></li>
+        <li><a href="#measurement-grid">Measurement Grid</a></li>
+        <li><a href="#attack-levels">Attack Levels</a></li>
+        <li><a href="#audit-trails">Audit Trails</a></li>
+        <li><a href="#reference-implementation">Reference Implementation</a></li>
+        <li><a href="#why-now">Why Now</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <h1>SDB-26 Standard Page</h1>
+      <p class="subtitle">A benchmark for document authenticity, not marketing accuracy.</p>
+
+      <section id="hero" class="hero">
+        <strong>SDB-26 measures whether verification systems withstand real synthetic-document attacks.</strong>
+        <p>
+          SDB-26 defines reproducible evaluation for synthetic, edited, and screen-recaptured artifacts
+          in operational conditions, with transparent metrics and schema-valid outputs.
+        </p>
+      </section>
+
+      <section id="measurement-grid">
+        <h2>Measurement Grid</h2>
+        <p>SDB-26 is built around measurable, comparable outcomes:</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>Meaning</th>
+              <th>Why it matters</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>BR</strong> (Bypass Rate)</td>
+              <td>Share of fraudulent/synthetic documents incorrectly approved</td>
+              <td>Core indicator of control failure</td>
+            </tr>
+            <tr>
+              <td><strong>CG</strong> (Confidence Gap)</td>
+              <td>Mean confidence on wrongly approved cases</td>
+              <td>Detects overconfident error patterns</td>
+            </tr>
+            <tr>
+              <td><strong>GS</strong> (Generator Sensitivity)</td>
+              <td>BR segmented by generator/model family</td>
+              <td>Shows where systems break first</td>
+            </tr>
+            <tr>
+              <td><strong>FPR</strong> (False Positive Rate)</td>
+              <td>Share of genuine cases flagged as suspicious/fraud</td>
+              <td>Tracks customer/business impact</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="muted">Reference: <code>STANDARD.md</code>, <code>METHODOLOGY.md</code>, <code>results_schema.json</code>.</p>
+      </section>
+
+      <section id="attack-levels">
+        <h2>Attack Levels</h2>
+        <p>SDB-26 evaluates three escalating attack classes:</p>
+        <ul>
+          <li><strong>L1 — Standard Generation:</strong> direct AI-generated documents, no post-processing.</li>
+          <li><strong>L2 — Advanced Diffusion:</strong> fine-tuning/editing/metadata manipulation scenarios.</li>
+          <li><strong>L3 — Screen Recapture:</strong> synthetic/edited files recaptured through display pipelines.</li>
+        </ul>
+        <p>
+          L3 is a foundation layer in the methodology because recapture can remove or distort provenance cues
+          while preserving plausible visual content.
+        </p>
+      </section>
+
+      <section id="audit-trails">
+        <h2>Audit Trails</h2>
+        <p>SDB-26 includes FRC and A2A artifacts for auditable decisions in agent-mediated workflows:</p>
+        <ul>
+          <li><code>docs/FRC_OVERVIEW.md</code></li>
+          <li><code>docs/FRC_A2A_EXTENSION.md</code></li>
+          <li><code>docs/FRC_A2A_DEPLOYMENT_MAPPING.md</code></li>
+        </ul>
+        <p>
+          This bridges document-level authenticity with agent-era traceability
+          (<code>instrumentation_trace</code>, L0/L0-D signals, ABR/TCR/HAR-style controls).
+        </p>
+      </section>
+
+      <section id="reference-implementation">
+        <h2>Reference Implementation</h2>
+        <p>Practical implementation path:</p>
+        <ul>
+          <li>
+            <strong>Forensic packet collection workflow</strong> (<code>collect_forensic_packet.py</code>)
+            for repeatable corpus acquisition pipelines.
+          </li>
+          <li>
+            <strong>Schema-valid decision artifacts</strong> using FRC/FRC A2A outputs and fixtures in this repository.
+          </li>
+        </ul>
+        <p>Related repo artifacts:</p>
+        <ul>
+          <li><code>examples/frc/</code></li>
+          <li><code>tests/frc/</code></li>
+          <li><code>schemas/frc_schema_v1_0_0.json</code></li>
+          <li><code>schemas/frc_a2a_envelope_v0_2_0.json</code></li>
+        </ul>
+      </section>
+
+      <section id="why-now">
+        <h2>Why Now</h2>
+        <p>
+          As AI generation quality and agent-mediated onboarding velocity rise, trust controls must move
+          from static checks to measurable, reproducible evidence chains.
+        </p>
+        <p><strong>SDB-26 provides that measurement contract.</strong></p>
+      </section>
+
+      <p class="footer-note">
+        Conference-oriented page inspired by specification-style layouts (table of contents + structured sections).
+        Author: <a href="AUTHOR.html">Ruslan Mishyn</a>.
+      </p>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://github.com/sevrusik/SDB-26/schema/results_schema.json",
+  "$id": "https://github.com/sevrusik/SDB26/schema/results_schema.json",
   "title": "SDB-26 Results Schema",
   "description": "Standard schema for reporting SDB-26 evaluation results",
   "version": "1.0",

@@ -3,7 +3,7 @@
 
 **Version:** 1.0  
 **Status:** Draft  
-**Repository:** github.com/sevrusik/SDB-26
+**Repository:** github.com/sevrusik/SDB26
 
 ---
 
@@ -174,5 +174,5 @@ FRC codes represent probabilistic forensic signals — not legal proof. Several 
 ---
 
 *SDB-26 Forensic Reason Codes — v1.0*  
-*github.com/sevrusik/SDB-26 · sdb26.com*  
+*github.com/sevrusik/SDB26 · sdb26.com*  
 *Not legal advice. Forensic signals are probabilistic indicators, not legal determinations.*

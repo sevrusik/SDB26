@@ -87,5 +87,5 @@
   },
   "notes": "This is the first public SDB-26 evaluation. FraudLens is the reference implementation for SDB-26 and the author of the benchmark. Level 3 and genuine document control set results to be published Q2 2026. We invite other organisations to publish their SDB-26 results.",
   "contact": "sevrusik@gmail.com",
-  "citation": "Mishyn, R. (2026). SDB-26: The 2026 Synthetic Document Benchmark. https://github.com/sevrusik/SDB-26"
+  "citation": "Mishyn, R. (2026). SDB-26: The 2026 Synthetic Document Benchmark. https://github.com/sevrusik/SDB26"
 }

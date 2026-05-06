@@ -1,0 +1,47 @@
+{
+  "a2a_extension_version": "0.2.0",
+  "submission_id": "exp-goal-misalignment-0001",
+  "submitted_at": "2026-05-07T14:10:00Z",
+  "submission_mode": "agent_managed_package",
+  "agent_id": "exp-kyc-orchestrator",
+  "autonomy_level": "SEMI_AUTONOMOUS",
+  "max_action_scope": "kyc.screening.read_write_case_only",
+  "requires_human_checkpoint": true,
+  "l0_codes": [
+    "FRC-L0-GOAL-MISALIGNMENT"
+  ],
+  "document_codes": [],
+  "agent_verdict": "SUSPICIOUS",
+  "compound_verdict": "REVIEW",
+  "compound_confidence": 0.71,
+  "frc_payload": {
+    "frc_schema_version": "1.0.0",
+    "sdb26_version": "SDB-26-v0.2",
+    "verdict": "GENUINE",
+    "verdict_confidence": 0.87,
+    "sdb26_class": "GENUINE",
+    "attack_level": "L1",
+    "primary_codes": [],
+    "supporting_codes": [],
+    "required_action": "approve",
+    "forensic_note": "Document-level checks are clean.",
+    "model_trace": {
+      "detector_version": "doclens-detector-0.9.3",
+      "pipeline_id": "exp-eu-a2a"
+    }
+  },
+  "instrumentation_trace": {
+    "tool_invocations": [],
+    "subagent_handoffs": [],
+    "guardrail_events": [
+      {
+        "event_type": "policy_violation",
+        "event_at": "2026-05-07T14:10:12Z",
+        "policy_ref": "POLICY-KYC-RESOLUTION-SPEED-001",
+        "action_taken": "review"
+      }
+    ]
+  },
+  "analyst_note": "Experimental fixture only; not part of normative schema CI.",
+  "corpus_version": "SDB-26-A2A-exp-v0.6"
+}

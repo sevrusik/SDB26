@@ -14,6 +14,12 @@ SDB-26 is the first open benchmark for testing document verification systems aga
 
 The KYC industry has no independent standard for measuring what percentage of synthetic documents pass through a given verification stack undetected. SDB-26 fills this gap.
 
+Conference/landing-style overview page:
+- [docs/SDB26_STANDARD_PAGE.md](docs/SDB26_STANDARD_PAGE.md)
+- [docs/SDB26_STANDARD_PAGE.html](docs/SDB26_STANDARD_PAGE.html)
+- [docs/AUTHOR.md](docs/AUTHOR.md)
+- [docs/AUTHOR.html](docs/AUTHOR.html)
+
 ---
 
 ## The Problem
@@ -57,6 +63,7 @@ Advanced extension draft for agent-to-agent contexts:
 - Deployment mapping companion: [docs/FRC_A2A_DEPLOYMENT_MAPPING.md](docs/FRC_A2A_DEPLOYMENT_MAPPING.md) (`FRC signal -> observability fields -> policy outcomes`)
 - Policy profile template: [examples/a2a_policy_profile_example.json](examples/a2a_policy_profile_example.json) (copy/adapt for ABR/TCR/HAR reporting profiles)
 - Policy profile presets: [examples/a2a_policy_profile_strict.json](examples/a2a_policy_profile_strict.json) and [examples/a2a_policy_profile_balanced.json](examples/a2a_policy_profile_balanced.json)
+- Experimental continuity track (non-normative): [docs/FRC_A2A_EXPERIMENTAL_v0_6.md](docs/FRC_A2A_EXPERIMENTAL_v0_6.md), with sample fixtures under `examples/frc/experimental/`
 
 Implementation note — how SDB-26 maps onto ENISA *Secure by Design and Default* (consultation playbook):
 - [docs/SDB26_ENISA_SecureByDesign_Mapping_v0.1.md](docs/SDB26_ENISA_SecureByDesign_Mapping_v0.1.md)
@@ -144,7 +151,7 @@ If you use SDB-26 in research or product evaluation, please cite:
 
 ```
 Mishyn, R. (2026). SDB-26: The 2026 Synthetic Document Benchmark.
-Retrieved from https://github.com/sevrusik/SDB-26
+Retrieved from https://github.com/sevrusik/SDB26
 ```
 
 ---

@@ -9,6 +9,25 @@ Format follows [Semantic Versioning](https://semver.org/):
 
 ---
 
+## [1.0.8] — May 2026
+
+**FRC A2A experimental continuity track (non-normative).**
+
+### Added
+- `docs/FRC_A2A_EXPERIMENTAL_v0_6.md` — exploratory annex for candidate multi-agent failure-mode controls and metrics.
+- `examples/frc/experimental/a2a_exp_goal_misalignment_review.json` — experimental fixture for goal-misalignment review path.
+- `examples/frc/experimental/a2a_exp_feedback_loop_escalate.json` — experimental fixture for loop-detection escalation path.
+
+### Changed
+- `docs/FRC_A2A_EXTENSION.md` now links to the experimental continuity track while preserving the normative v0.5 contract.
+- `README.md` now references the experimental track and fixture location.
+
+### Notes
+- No changes to normative schema contracts in `schemas/`.
+- Experimental fixtures are intentionally outside normative schema CI in v1.0.x.
+
+---
+
 ## [1.0.7] — May 2026
 
 **FRC A2A v0.5 policy-path fixtures + optional `agent_verdict` guidance.**
