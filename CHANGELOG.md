@@ -19,26 +19,11 @@ Format follows [Semantic Versioning](https://semver.org/):
 
 ### Changed
 - `schemas/frc_a2a_envelope_v0_2_0.json` — added optional `agent_verdict` enum (`ATTESTED | PARTIALLY_ATTESTED | UNATTESTED | SUSPICIOUS`).
-- `docs/FRC_A2A_EXTENSION.md` promoted to v0.5 and expanded with optional `agent_verdict` consistency guidance.
-- `docs/FRC_A2A_EXTENSION.md` now includes `Relationship to deployed agent architectures` with explicit Anthropic `kyc-screener` reference context and L0/TCR/HAR mapping notes.
+- `docs/FRC_A2A_EXTENSION.md` promoted to v0.5: optional `agent_verdict` consistency guidance + `Relationship to deployed agent architectures` section with Anthropic `kyc-screener` reference and L0/TCR/HAR mapping notes.
 - `README.md` and `examples/frc/README.md` updated with new policy-path examples.
 - Added companion note `docs/FRC_A2A_DEPLOYMENT_MAPPING.md` with `FRC signal -> observability fields -> policy outcomes` mapping table and implementation checklist.
 - Added copy-ready policy profile template `examples/a2a_policy_profile_example.json` and linked it from README/deployment mapping note.
 - Added policy profile presets `examples/a2a_policy_profile_strict.json` and `examples/a2a_policy_profile_balanced.json` for strict vs balanced operating models.
-
----
-
-## [1.0.5] — May 2026
-
-**FRC A2A investigator walkthrough and Mode A envelope example.**
-
-### Added
-- `examples/frc/README.md` — Mode A vs Mode B checklist for investigators; `agent_submitted` note; comparison table.
-- `examples/frc/a2a_audit_mode_a_human_upload.json` — valid envelope (`human_direct`, no `instrumentation_trace`).
-
-### Changed
-- `docs/FRC_A2A_EXTENSION.md` — v **0.3**: appendix linking to examples; versioning table; roadmap 0.4.
-- `scripts/validate_frc_schemas.py` — validates both A2A envelope fixtures under `examples/frc/`.
 
 ---
 
@@ -55,6 +40,20 @@ Format follows [Semantic Versioning](https://semver.org/):
 - `scripts/validate_frc_schemas.py` now validates all `examples/frc/a2a_*.json` fixtures (pattern-based discovery).
 - `docs/FRC_A2A_EXTENSION.md` upgraded to v0.4 and version history updated.
 - `examples/frc/README.md` extended with Mode B review/escalate variants.
+
+---
+
+## [1.0.5] — May 2026
+
+**FRC A2A investigator walkthrough and Mode A envelope example.**
+
+### Added
+- `examples/frc/README.md` — Mode A vs Mode B checklist for investigators; `agent_submitted` note; comparison table.
+- `examples/frc/a2a_audit_mode_a_human_upload.json` — valid envelope (`human_direct`, no `instrumentation_trace`).
+
+### Changed
+- `docs/FRC_A2A_EXTENSION.md` — v **0.3**: appendix linking to examples; versioning table; roadmap 0.4.
+- `scripts/validate_frc_schemas.py` — validates both A2A envelope fixtures under `examples/frc/`.
 
 ---
 
