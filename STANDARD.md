@@ -190,9 +190,11 @@ ABR_strict = N(L0_high_risk AND compound_verdict = "TRUSTED")
 **Agent Confidence Gap (ACG):**
 
 ```
-ACG = mean(verdict_confidence[i]) for i where:
+ACG = mean(compound_confidence[i]) for i where:
   L0_high_risk[i] = true AND compound_verdict[i] = "TRUSTED"
 ```
+
+Where **`compound_confidence`** is the envelope-level score defined in the FRC A2A Extension (joint confidence in **`compound_verdict`** after document + agent + policy). Implementations MUST disclose the **`compound_confidence` composition rule** (`CC_MIN`, `CC_DOC_ONLY`, `CC_CUSTOM`, or equivalent); ACG is not comparable across systems that use incompatible composition without adjustment.
 
 **Chain Depth Rate (CDR):**
 

@@ -32,6 +32,7 @@ EXAMPLES_FRC = ROOT / "examples" / "frc"
 
 FRC_URI = "https://sdb26.com/schemas/frc_schema_v1_0_0.json"
 ENV_URI = "https://sdb26.com/schemas/frc_a2a_envelope_v0_2_0.json"
+A2A_SURF_URI = "https://sdb26.com/schemas/a2a_v1_surfaces.json"
 
 
 def load_json(path: Path) -> dict:
@@ -47,9 +48,11 @@ def frc_registry() -> tuple[dict, Registry]:
 def envelope_registry() -> tuple[dict, Registry]:
     frc = load_json(SCHEMAS / "frc_schema_v1_0_0.json")
     envelope = load_json(SCHEMAS / "frc_a2a_envelope_v0_2_0.json")
+    a2a_surfaces = load_json(SCHEMAS / "a2a_v1_surfaces.json")
     registry = (
         Registry()
         .with_resource(FRC_URI, Resource.from_contents(frc))
+        .with_resource(A2A_SURF_URI, Resource.from_contents(a2a_surfaces))
         .with_resource(ENV_URI, Resource.from_contents(envelope))
     )
     return envelope, registry

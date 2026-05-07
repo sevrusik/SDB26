@@ -1,7 +1,7 @@
 # FRC A2A Extension — Agent Identity Forensics
 ## SDB-26 Extension: Forensic Reason Codes for Agentic Submission Contexts
 
-**Version:** 0.5 (Draft for public comment)  
+**Version:** 0.5.2 (Draft for public comment)  
 **Status:** Proposed extension to FRC v1.0  
 **Repository:** github.com/sevrusik/SDB26  
 **Scope:** Measurement framework — implementation-agnostic
@@ -179,14 +179,84 @@ FRC A2A Extension introduces a two-dimensional verdict:
 | GENUINE | SUSPICIOUS | ESCALATE | Document passes but agent shows fraud signals; default safe handling is escalation |
 | SYNTHETIC/EDITED/SCREENSHOT | any | BLOCK | Document fails regardless of agent status |
 | INSUFFICIENT | ATTESTED | REVIEW | Cannot assess document; agent verified |
+| INSUFFICIENT | PARTIALLY_ATTESTED | REVIEW | Evidence gap on file; agent chain or policy checkpoints incomplete — recoverable with staged re-capture + disclosure / HITL per policy |
 | INSUFFICIENT | UNATTESTED | ESCALATE | Cannot assess either layer |
+| INSUFFICIENT | SUSPICIOUS | ESCALATE | Evidence gap on file **and** high-risk agent/instrumentation signals — do not route to “simple quality retry” until agent path is triaged |
 
 **Key principle:** A genuine document submitted by an unattested or suspicious agent should not result in automatic approval. The agent layer is not decorative — it is a primary signal.
+
+For **`INSUFFICIENT` document verdict** (equivalently `sdb26_class = INSUFFICIENT` when that mirrors insufficient evidence), **`SUSPICIOUS` dominates `PARTIALLY_ATTESTED` for compound routing**: if runtime assignment yields `SUSPICIOUS` (row 2 L0 triggers), use the `INSUFFICIENT + SUSPICIOUS` row even if softer codes would alone yield partial attestation. Precedence matches the **Assigning `agent_verdict` at runtime** table (row 1 > row 2 > row 3).
+
+### Decision tree: `INSUFFICIENT` × `agent_verdict`
+
+Use when `verdict = INSUFFICIENT` or document assessment ends in insufficient quality / evidence (`sdb26_class = INSUFFICIENT` aligned).
+
+```
+INSUFFICIENT (document layer)
+    │
+    ├─ agent_verdict omitted (Mode A, no agent asserted) ──► compound_verdict = REVIEW
+    │     (equivalent to document-only REVIEW; see Mode A appendix)
+    │
+    ├─ ATTESTED ──► REVIEW  (re-submit improved capture via same attested channel)
+    │
+    ├─ PARTIALLY_ATTESTED ──► REVIEW  (fix quality + close partial gaps: model disclosure,
+    │                                    HITL, temporal checks — policy lists allowed retries)
+    │
+    ├─ UNATTESTED ──► ESCALATE  (resolve identity/delegation before blind re-submit)
+    │
+    └─ SUSPICIOUS ──► ESCALATE  (instrumentation / connector / data-path risk + bad capture;
+                                  triage agent path first; optional policy BLOCK on repeat)
+```
+
+**Operational note:** `INSUFFICIENT + SUSPICIOUS` is **not** the same operational path as `INSUFFICIENT + PARTIALLY_ATTESTED`: the former requires **agent-layer triage** (or escalation) before treating the case as a **quality-only** re-upload loop.
 
 Default policy sets `GENUINE + SUSPICIOUS -> ESCALATE`.  
 `BLOCK` may be applied as an institution-specific override for high-risk segments or repeated suspicious patterns.
 
 **Mode B note:** For **agent-mediated** submissions, institutions MAY map `FRC-L0-DATA-PATH-UNATTRIBUTED` or `FRC-L0-HANDOFF-UNAUDITED` to `agent_verdict = SUSPICIOUS` (or force `compound_verdict = ESCALATE`) even when the document layer is `GENUINE`, unless explicit policy accepts unattributed tool paths for that product.
+
+### Assigning `agent_verdict` at runtime (normative procedure)
+
+`PARTIALLY_ATTESTED` is **not** a catch-all. Implementations MUST assign it only when the rule below yields `PARTIALLY_ATTESTED`, or when an explicit, versioned **policy profile** replaces the default code→verdict mapping (see `examples/a2a_policy_profile_*.json` patterns). Replacement profiles MUST be published with benchmark results so `agent_verdict` remains comparable across runs.
+
+**Preconditions:** Compute `agent_verdict` only over **agent-context** L0 codes (L0-A through L0-D). Document-only codes in `document_codes` do not set `agent_verdict`. For **Mode A (`human_direct`)** with no agent identity asserted, **`agent_verdict` SHOULD be omitted** — do not set `ATTESTED` without affirmative attestation evidence.
+
+**Default mapping (first matching row wins — evaluate in order):**
+
+| Step | If `l0_codes` contains any of… | Then `agent_verdict` |
+|------|--------------------------------|----------------------|
+| 1 | `FRC-L0-AGENT-UNATTESTED`, `FRC-L0-AGENT-EXPIRED`, `FRC-L0-CHAIN-BREAK`, `FRC-L0-AUTHORITY-MISMATCH`, `FRC-L0-PRINCIPAL-ABSENT` | `UNATTESTED` |
+| 2 | `FRC-L0-VELOCITY-FLAG`, `FRC-L0-SESSION-ANOMALY`, `FRC-L0-TOOL-PERMISSION-VIOLATION`, `FRC-L0-CONNECTOR-OUT-OF-POLICY`, `FRC-L0-SECRET-BINDING-UNKNOWN`, `FRC-L0-DATA-PATH-UNATTRIBUTED`, `FRC-L0-HANDOFF-UNAUDITED` | `SUSPICIOUS` |
+| 3 | `FRC-L0-MODEL-UNDISCLOSED`, `FRC-L0-TEMPORAL-ANOMALY`, `FRC-L0-HITL-ASSERTION-MISSING` | `PARTIALLY_ATTESTED` |
+| 4 | (no agent-context L0 codes, or only codes outside rows 1–3) | `ATTESTED` |
+
+**Notes:**
+
+- Row 2 is the default for **data-path and handoff** gaps in agent-mediated flows. An institution that treats a subset of those codes as **review-tier only** MUST publish a profile that **moves** those codes to row 3 (partial) or defines a custom row — silent ad-hoc assignment is non-conformant for reporting.
+- Row 3 codes are **partial** only if rows 1–2 did not fire. Example: `FRC-L0-MODEL-UNDISCLOSED` with an otherwise verifiable chain → `PARTIALLY_ATTESTED` + `GENUINE` document → `compound_verdict = REVIEW` per matrix above.
+- If the same code appears in multiple rows in a custom profile, the profile MUST define a single deterministic precedence table.
+
+### Confidence: `verdict_confidence` vs `compound_confidence`
+
+The core FRC payload requires **`verdict_confidence`** (`schemas/frc_schema_v1_0_0.json`): a scalar in **[0, 1]** that MUST represent **document-layer** confidence only — i.e. how strongly the **document** `verdict` (`GENUINE` / `FRAUD` / `INSUFFICIENT`) is supported by pixel, metadata, and intrinsic evidence **before** applying the compound routing matrix. Folding agent-layer signals into the document scorer is **discouraged**; if done, the methodology MUST state so explicitly.
+
+The envelope requires **`compound_confidence`**: a scalar in **[0, 1]** for confidence in the **final control outcome** **`compound_verdict`** (after combining document outcome, `agent_verdict` or equivalent L0 posture, and institutional policy). SDB-26 does **not** mandate a single global formula (calibration is system-specific), but implementations MUST meet all of the following:
+
+1. **Publish the composition rule** used in production for the benchmarked build (e.g. in methodology appendix or machine-readable policy profile): one of the reference recipes below or a documented alternative.
+2. **Mode A:** If `submission_mode = human_direct` and `agent_verdict` is omitted, **`compound_confidence` MUST equal `verdict_confidence`** unless policy explicitly combines other factors — then disclose.
+3. **Mode B / agent-mediated:** Either supply optional **`agent_layer_confidence`** on the envelope (confidence that the assigned `agent_verdict` / L0 posture is correct given agent-context evidence), or document how `compound_confidence` was set without it.
+
+**Reference composition recipes (pick one and disclose):**
+
+| ID | Rule | When to use |
+|----|------|-------------|
+| `CC_MIN` | `compound_confidence = min(verdict_confidence, agent_layer_confidence)` | Both layers emit calibrated scores; conservative joint bound. |
+| `CC_DOC_ONLY` | `compound_confidence = verdict_confidence` | Agent layer only gates routing (no separate score); implies agent posture is binary / policy-threshold only. |
+| `CC_CUSTOM` | Any other documented `f(verdict_confidence, agent_layer_confidence, …)` | Allowed if formula and calibration are published; benchmark comparability requires the same ID across systems under test. |
+
+If **`CC_MIN`** is used, **`agent_layer_confidence` SHOULD be present** whenever `agent_verdict` is present. If it is omitted, `compound_confidence` MUST be documented as **non-comparable** to other runs using `CC_MIN` until the field is populated.
+
+**ACG (Agent Confidence Gap):** Report ACG using **`compound_confidence`**, not `verdict_confidence`, for the subset where `L0_high_risk` and `compound_verdict = TRUSTED` (see `STANDARD.md` §4.5). That aligns the metric with the **joint** approval decision.
 
 ---
 
@@ -218,9 +288,9 @@ Where `OperationalBypassSet` must be disclosed explicitly (for example `{TRUSTED
 
 ### ACG — Agent Confidence Gap
 
-**Definition:** Mean confidence score on submissions where L0 codes are present but compound verdict is TRUSTED.
+**Definition:** Mean **`compound_confidence`** on submissions where `L0_high_risk` is true and **`compound_verdict = TRUSTED`**.
 
-**Interpretation:** High ACG indicates the system is near the approval boundary on suspicious agent submissions — small perturbations could flip the verdict. Low headroom for adversarial optimisation.
+**Interpretation:** High ACG indicates the joint (document + agent + policy) approval decision is near the boundary — small perturbations could flip **`compound_verdict`**. Low headroom for adversarial optimisation. Implementations MUST disclose which **`compound_confidence` composition rule** (see § Confidence above) was used; ACG values are not comparable across systems that use incompatible composition without adjustment.
 
 ### CDR — Chain Depth Rate
 
@@ -275,19 +345,29 @@ The INSUFFICIENT class takes on additional significance in A2A contexts:
 **If agent is ATTESTED but document is INSUFFICIENT:**  
 → Request re-submission via the same attested agent. The agent identity is not in question; only the document quality.
 
+**If agent is PARTIALLY_ATTESTED and document is INSUFFICIENT:**  
+→ **REVIEW** path by default (see compound matrix): allow a **bounded** retry loop that addresses **both** capture quality (document) and disclosed gaps (model/HITL/temporal) per published policy. Do not treat as equivalent to fully attested until partial codes are cleared.
+
+**If agent is SUSPICIOUS and document is INSUFFICIENT:**  
+→ **ESCALATE** by default: combined evidence and agent/instrumentation risk — **do not** automate “just re-upload” without triaging the agent data path. Policy MAY map repeat occurrences to **BLOCK**.
+
 **If agent is UNATTESTED and document is INSUFFICIENT:**  
 → Do not request re-submission until agent attestation is resolved. Requesting re-submission from an unattested agent generates more unverifiable data.
 
 **If both layers are INSUFFICIENT:**  
 → Terminate session. Request human-initiated re-submission.
 
-**Policy requirement:** INSUFFICIENT handling in A2A must be documented explicitly, including: what triggers re-submission, how many re-submission attempts are permitted before escalation, and what agent attestation is required for each attempt.
+**Policy requirement:** INSUFFICIENT handling in A2A must be documented explicitly, including: what triggers re-submission, how many re-submission attempts are permitted before escalation, and what agent attestation is required for each attempt — **including distinct limits for `PARTIALLY_ATTESTED` vs `SUSPICIOUS` agent posture**.
 
 ---
 
 ## Audit Trail Requirements
 
 **Machine validation:** Conformant audit records MAY be validated with `schemas/frc_a2a_envelope_v0_2_0.json`. The nested `frc_payload` MUST satisfy `schemas/frc_schema_v1_0_0.json`.
+
+**A2A protocol types (normative):** Any field in this extension that is meant to interoperate with or cite the [Agent2Agent (A2A) Protocol](https://a2a-protocol.org/latest/specification/) MUST use the formal message and enum definitions from that standard (canonical source: `a2a.proto`; non-normative JSON mirror: `https://a2a-protocol.org/latest/spec/a2a.json`). Do not introduce parallel SDB-26 spellings for the same concepts — for example, `TaskStatus.state` MUST use the `TASK_STATE_*` string values (JSON mapping), not ad-hoc tokens such as `completed` or `working`.
+
+For machine validation of the subset we embed on the audit envelope, use `schemas/a2a_v1_surfaces.json` (Task / TaskStatus surfaces, Agent Card URI). Optional envelope field `a2a_correlation` carries `protocolBinding` / `protocolVersion` (from `AgentInterface`) and a `task` slice aligned with A2A `Task`. Update `a2a_v1_surfaces.json` when pinning a new A2A major/minor release.
 
 For A2A submissions, the audit trail must include the core record below. **Agent-mediated (Mode B)** submissions SHOULD additionally include `instrumentation_trace` when any external tool or connector was used.
 
@@ -367,6 +447,16 @@ A legitimately attested agent performs actions outside its declared authority sc
 Adversary relies on plausible dossier text or stitched files while omitting or tampering with tool/connector logs so reviewers cannot reconstruct data provenance.  
 *Primary codes:* FRC-L0-DATA-PATH-UNATTRIBUTED, FRC-L0-HANDOFF-UNAUDITED, FRC-L0-TOOL-PERMISSION-VIOLATION
 
+**T6 — Shadow connector and policy bypass**  
+Adversary drives enrichment, lookup, or file assembly through **connectors or endpoints outside** the institution’s governed **OperationalConnectorSet** — or spoofs connector identity in logs — to pull in unvetted data, leak prompts/context to third parties, or bypass spend/audit controls on approved feeds.  
+*Primary codes:* FRC-L0-CONNECTOR-OUT-OF-POLICY  
+*Failure mode:* decisions rest on data whose source is not contractually or operationally approved; incident response cannot reproduce which API or MCP server supplied each fact.
+
+**T7 — Secret theft and opaque workload binding**  
+Adversary uses OAuth tokens, API keys, or vault secrets that **cannot be shown** to bind to the **attested agent workload** (wrong binding, shared pool, or stolen key used from an unattested process). Instrumentation may show *a* call succeeded without proving *which* workload was authorised.  
+*Primary codes:* FRC-L0-SECRET-BINDING-UNKNOWN  
+*Failure mode:* external systems accept requests that appear legitimate while the binding between credential, agent identity, and session is non-auditable — enabling replay from compromised automation.
+
 ---
 
 ## Relationship to Existing Standards
@@ -428,7 +518,7 @@ This track is non-normative and intentionally outside the v1.0.x conformance con
 1. **Threshold for FRC-L0-TEMPORAL-ANOMALY:** What is the appropriate time delta threshold between document creation and submission? 30 seconds is proposed; domain practitioners may have evidence for different values.
 2. **Velocity thresholds for FRC-L0-VELOCITY-FLAG:** What N submissions in window T constitutes a flag? This likely varies by use case (retail onboarding vs. bulk institutional onboarding).
 3. **Chain depth threshold for CDR:** Is 3 hops the right threshold? Some legitimate architectures may require deeper chains.
-4. **Handling of partially attested chains:** Current framework distinguishes ATTESTED / PARTIALLY_ATTESTED / UNATTESTED. Is finer granularity needed?
+4. **Handling of partially attested chains:** v0.5.2 defines **compound verdicts** for `INSUFFICIENT + PARTIALLY_ATTESTED` / `+ SUSPICIOUS` and a small **decision tree**. Open: do deployments need **sub-types** of `PARTIALLY_ATTESTED` (e.g. model-only vs connector-policy-only) for reporting, or is L0 code list sufficient?
 5. **Interaction with existing fraud scoring:** How should L0 codes interact with behavioural fraud scores that operate at the session or account level?
 6. **TCR / HAR thresholds:** Should a minimum acceptable TCR/HAR be normative for certain regulated flows, or left to institution disclosure only?
 7. **What counts as “material” tool invocation:** Excluding low-risk steps (e.g. internal string normalisation) from mandatory logging — can we standardise an exclusion taxonomy?
@@ -485,9 +575,11 @@ This field is advisory and should remain consistent with `l0_codes` and `compoun
 
 Suggested consistency checks (implementation-level):
 
-- `agent_verdict = UNATTESTED` should co-occur with at least one attestation/delegation L0 finding.
-- `agent_verdict = SUSPICIOUS` should be explainable by high-risk behavioural/instrumentation L0 findings.
-- `agent_verdict = ATTESTED` with severe L0-D signals should trigger policy review of mapping logic.
+- `agent_verdict` SHOULD match the **Assigning `agent_verdict` at runtime** procedure above (or a published policy profile that replaces the default L0→verdict sets).
+- `agent_verdict = UNATTESTED` MUST imply at least one row-1 L0 code under the default mapping (or the profile’s equivalent).
+- `agent_verdict = SUSPICIOUS` MUST imply at least one row-2 code (or profile equivalent); `PARTIALLY_ATTESTED` MUST imply row-3 only after rows 1–2 are clear.
+- `agent_verdict = ATTESTED` with any row-1 or row-2 code under the same mapping should fail validation or policy QA.
+- **`compound_confidence`** SHOULD be reconcilable with the published **composition rule** and optional **`agent_layer_confidence`**.
 
 ---
 
@@ -533,12 +625,14 @@ Envelope schema version remains **`a2a_extension_version`: `0.2.0`** until a bre
 | 0.3 | Appendix: investigator Mode A vs Mode B walkthrough; `examples/frc/README.md` + Mode A envelope example; validator covers both envelope fixtures. |
 | 0.4 | Added calibration guidance (velocity, MaterialToolSet, TCR/HAR rollout); added redacted Mode B examples for `ESCALATE` and `REVIEW` policy paths. |
 | 0.5 | Added optional envelope guidance for explicit `agent_verdict`; added policy-path fixtures for `INSUFFICIENT + UNATTESTED => ESCALATE` and repeated L0 high-risk pattern => `BLOCK`. |
+| 0.5.1 | Normative runtime assignment for `agent_verdict` (L0 trigger sets, precedence); clarified `PARTIALLY_ATTESTED`; defined `verdict_confidence` vs `compound_confidence`, reference composition recipes (`CC_MIN` / `CC_DOC_ONLY` / `CC_CUSTOM`), optional `agent_layer_confidence`; ACG uses `compound_confidence`. |
+| 0.5.2 | Compound matrix + decision tree for `INSUFFICIENT` + `PARTIALLY_ATTESTED` / `SUSPICIOUS`; expanded INSUFFICIENT handling; threat actors **T6** (shadow connector / `FRC-L0-CONNECTOR-OUT-OF-POLICY`) and **T7** (secret binding / `FRC-L0-SECRET-BINDING-UNKNOWN`). |
 
 Next planned version (0.6): optional machine-readable policy profile examples (`OperationalBypassSet`, `MaterialToolSet`) and confidence calibration cookbook.
 
 ---
 
-*SDB-26 FRC A2A Extension v0.5 — May 2026*  
+*SDB-26 FRC A2A Extension v0.5.2 — May 2026*  
 *github.com/sevrusik/SDB26 · sdb26.com*  
 *Implementation-agnostic measurement framework. Not legal advice.*  
 *Published under the same licence as SDB-26.*

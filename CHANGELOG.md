@@ -9,6 +9,37 @@ Format follows [Semantic Versioning](https://semver.org/):
 
 ---
 
+## [1.0.10] — May 2026
+
+**FRC A2A Extension v0.5.2 — INSUFFICIENT compound rows, decision tree, threat T6/T7.**
+
+### Added
+- Compound verdict matrix rows: **`INSUFFICIENT + PARTIALLY_ATTESTED → REVIEW`**, **`INSUFFICIENT + SUSPICIOUS → ESCALATE`**; ASCII **decision tree** for insufficient-document × `agent_verdict`.
+- Threat actors **T6** (shadow connector / `FRC-L0-CONNECTOR-OUT-OF-POLICY`) and **T7** (secret binding / `FRC-L0-SECRET-BINDING-UNKNOWN`).
+
+### Changed
+- `docs/FRC_A2A_EXTENSION.md` → **v0.5.2**; **INSUFFICIENT Handling in A2A** expanded for `PARTIALLY_ATTESTED` and `SUSPICIOUS`.
+- `README.md` and `schemas/frc_a2a_envelope_v0_2_0.json` description pointer.
+
+---
+
+## [1.0.9] — May 2026
+
+**FRC A2A Extension v0.5.1 — `agent_verdict` runtime mapping and compound confidence semantics.**
+
+### Added
+- Normative **L0→`agent_verdict` precedence table** (default trigger sets for `UNATTESTED` / `SUSPICIOUS` / `PARTIALLY_ATTESTED` / `ATTESTED`) and **confidence** section: `verdict_confidence` (document-only) vs `compound_confidence` (joint), reference composition IDs `CC_MIN` / `CC_DOC_ONLY` / `CC_CUSTOM`, optional **`agent_layer_confidence`** on the envelope.
+
+### Changed
+- `docs/FRC_A2A_EXTENSION.md` → **v0.5.1**; **ACG** now defined on **`compound_confidence`** (not `verdict_confidence`).
+- `STANDARD.md` §4.5 **ACG** formula updated to match.
+- `schemas/frc_schema_v1_0_0.json` — `description` on **`verdict_confidence`**.
+- `schemas/frc_a2a_envelope_v0_2_0.json` — descriptions on **`compound_confidence`**, optional **`agent_layer_confidence`**.
+- `examples/frc/a2a_envelope_example.json` — illustrative **`agent_layer_confidence`**.
+- `README.md` — FRC A2A doc pointer **v0.5.1**.
+
+---
+
 ## [1.0.8] — May 2026
 
 **FRC A2A experimental continuity track (non-normative).**

@@ -57,7 +57,7 @@ SDB-26 now includes a Forensic Reason Codes (FRC) package for explainable, audit
 - CI fixtures (valid/invalid): [tests/frc](tests/frc) — validated by [scripts/validate_frc_schemas.py](scripts/validate_frc_schemas.py) (see [requirements-dev.txt](requirements-dev.txt))
 
 Advanced extension draft for agent-to-agent contexts:
-- [docs/FRC_A2A_EXTENSION.md](docs/FRC_A2A_EXTENSION.md) (v0.5 — L0-D instrumentation, TCR/HAR, calibration guidance, optional `agent_verdict`, investigator appendix)
+- [docs/FRC_A2A_EXTENSION.md](docs/FRC_A2A_EXTENSION.md) (v0.5.2 — L0-D instrumentation, TCR/HAR, compound matrix incl. `INSUFFICIENT`×`PARTIALLY_ATTESTED`/`SUSPICIOUS`, threat actors T6–T7, normative `agent_verdict` mapping, compound confidence, investigator appendix)
 - JSON Schema (audit envelope): [schemas/frc_a2a_envelope_v0_2_0.json](schemas/frc_a2a_envelope_v0_2_0.json)
 - Deployment relationship note: v0.5 now includes a dedicated section mapping FRC A2A controls to deployed agent architectures (including Anthropic `kyc-screener` as public reference context).
 - Deployment mapping companion: [docs/FRC_A2A_DEPLOYMENT_MAPPING.md](docs/FRC_A2A_DEPLOYMENT_MAPPING.md) (`FRC signal -> observability fields -> policy outcomes`)

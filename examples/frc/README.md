@@ -1,6 +1,6 @@
 # FRC reference examples
 
-This directory contains machine-validated JSON aligned with `schemas/frc_schema_v1_0_0.json` and the A2A audit envelope (`schemas/frc_a2a_envelope_v0_2_0.json`).
+This directory contains machine-validated JSON aligned with `schemas/frc_schema_v1_0_0.json`, the A2A audit envelope (`schemas/frc_a2a_envelope_v0_2_0.json`), and — where present — A2A type surfaces in `schemas/a2a_v1_surfaces.json` (Task / TaskStatus enums aligned with the [A2A specification](https://a2a-protocol.org/latest/specification/)).
 
 ## Core FRC payloads (document layer only)
 
@@ -50,7 +50,7 @@ These wrap a full `frc_payload` **plus** L0 / audit fields. See [docs/FRC_A2A_EX
 4. **`l0_codes`** and **`hitl_checkpoint_id`**: check policy-mandated human approval before submit.
 5. **`compound_verdict`**: document failure (`FRC` fraud / synthetic) still **dominates** → typically `BLOCK` even if the agent layer looks clean.
 
-**Example file:** [`a2a_envelope_example.json`](a2a_envelope_example.json)
+**Example file:** [`a2a_envelope_example.json`](a2a_envelope_example.json) — includes optional `a2a_correlation` (`TASK_STATE_*`, Agent Card URI, protocol binding/version) for verifiers that record the upstream A2A Task.
 
 ---
 

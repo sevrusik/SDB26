@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://sdb26.com/schemas/frc_a2a_envelope_v0_2_0.json",
   "title": "FRC A2A Audit Envelope v0.2.0",
-  "description": "Structured audit record for agentic submission contexts. Extends FRC v1.0 with L0 agent/instrumentation signals. See docs/FRC_A2A_EXTENSION.md.",
+  "description": "Structured audit record for agentic submission contexts. Extends FRC v1.0 with L0 agent/instrumentation signals. See docs/FRC_A2A_EXTENSION.md (v0.5.2+ for agent_verdict assignment, compound_confidence composition, and INSUFFICIENT×agent verdict matrix).",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -89,11 +89,41 @@
     "compound_confidence": {
       "type": "number",
       "minimum": 0,
-      "maximum": 1
+      "maximum": 1,
+      "description": "Confidence in the final `compound_verdict` (document + agent posture + policy). Composition vs nested `frc_payload.verdict_confidence` is implementation-defined but MUST be published (e.g. CC_MIN, CC_DOC_ONLY, CC_CUSTOM per docs/FRC_A2A_EXTENSION.md). For Mode A with `agent_verdict` omitted, SHOULD equal `frc_payload.verdict_confidence` unless documented otherwise."
+    },
+    "agent_layer_confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Optional: calibrated confidence that `agent_verdict` (and implied L0 posture) matches true agent-context risk. RECOMMENDED when using composition rule CC_MIN with `agent_verdict` present."
     },
     "hitl_checkpoint_id": {
       "type": "string",
       "minLength": 1
+    },
+    "a2a_correlation": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional binding to A2A (Agent2Agent) protocol objects. Inner keys use A2A JSON field naming (camelCase). Types are surfaces of lf.a2a.v1 messages — see schemas/a2a_v1_surfaces.json and https://a2a-protocol.org/latest/specification/",
+      "properties": {
+        "agentCardUri": {
+          "$ref": "a2a_v1_surfaces.json#/$defs/AgentCardUri"
+        },
+        "protocolBinding": {
+          "type": "string",
+          "minLength": 1,
+          "description": "AgentInterface.protocolBinding (e.g. JSONRPC, HTTP+JSON, GRPC)."
+        },
+        "protocolVersion": {
+          "type": "string",
+          "minLength": 1,
+          "description": "AgentInterface.protocolVersion or A2A-Version service parameter."
+        },
+        "task": {
+          "$ref": "a2a_v1_surfaces.json#/$defs/TaskSurface"
+        }
+      }
     },
     "frc_payload": {
       "$ref": "frc_schema_v1_0_0.json"

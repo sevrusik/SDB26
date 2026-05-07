@@ -14,7 +14,21 @@
   "document_codes": ["FRC-L3-MOIRE-PATTERN", "FRC-L3-DOUBLE-COMPRESSION"],
   "compound_verdict": "BLOCK",
   "compound_confidence": 0.93,
+  "agent_layer_confidence": 0.88,
   "hitl_checkpoint_id": "hitl-approval-20260506-001",
+  "a2a_correlation": {
+    "agentCardUri": "https://kyc-agent.example.com/.well-known/agent-card.json",
+    "protocolBinding": "JSONRPC",
+    "protocolVersion": "1.0",
+    "task": {
+      "id": "a2a-task-7f3c9e2a-001",
+      "contextId": "ctx-session-88421",
+      "status": {
+        "state": "TASK_STATE_COMPLETED",
+        "timestamp": "2026-05-06T15:00:04Z"
+      }
+    }
+  },
   "frc_payload": {
     "frc_schema_version": "1.0.0",
     "sdb26_version": "SDB-26-v0.2",

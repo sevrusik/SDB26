@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sdb26.com/schemas/a2a_v1_surfaces.json",
+  "title": "A2A v1 type surfaces (FRC alignment)",
+  "description": "Minimal JSON Schema fragments synchronized with A2A Protocol canonical types (lf.a2a.v1 / a2a.proto). Normative reference: https://a2a-protocol.org/latest/specification/ — non-normative JSON mirror: https://a2a-protocol.org/latest/spec/a2a.json definitions \"Task Status\" (state), \"Task\", \"Agent Card\". When the protocol enum evolves, update this file and the pinned spec version note in docs/FRC_A2A_EXTENSION.md.",
+  "$defs": {
+    "TaskState": {
+      "title": "Task State",
+      "description": "String enum values for TaskStatus.state in A2A JSON (proto TASK_STATE_*). Integer wire values are valid in A2A but not used in FRC surfaces.",
+      "type": "string",
+      "enum": [
+        "TASK_STATE_UNSPECIFIED",
+        "TASK_STATE_SUBMITTED",
+        "TASK_STATE_WORKING",
+        "TASK_STATE_COMPLETED",
+        "TASK_STATE_FAILED",
+        "TASK_STATE_CANCELED",
+        "TASK_STATE_INPUT_REQUIRED",
+        "TASK_STATE_REJECTED",
+        "TASK_STATE_AUTH_REQUIRED"
+      ]
+    },
+    "TaskStatusSurface": {
+      "title": "Task Status (surface)",
+      "description": "Subset of A2A TaskStatus: state (+ optional timestamp). For a full Message on status, use A2A Task payloads or attach out-of-band; FRC envelope does not re-model Part/Message trees.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state"],
+      "properties": {
+        "state": {
+          "$ref": "#/$defs/TaskState"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 — aligns with google.protobuf.Timestamp JSON mapping in A2A."
+        }
+      }
+    },
+    "TaskSurface": {
+      "title": "Task (surface)",
+      "description": "Subset of A2A Task for audit correlation: id, optional contextId, required status. Omitted fields (artifacts, history, metadata) MAY be stored in verifier systems per full A2A Task.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Task.id — server-generated task identifier."
+        },
+        "contextId": {
+          "type": "string",
+          "description": "Task.contextId — optional conversation/session grouping."
+        },
+        "status": {
+          "$ref": "#/$defs/TaskStatusSurface"
+        }
+      }
+    },
+    "AgentCardUri": {
+      "title": "Agent Card locator",
+      "description": "Discovery reference for the remote agent's Agent Card (e.g. https://host/.well-known/agent-card.json per A2A §8). Not the full card; embed full Agent Card only when policy allows.",
+      "type": "string",
+      "format": "uri"
+    }
+  }
+}
