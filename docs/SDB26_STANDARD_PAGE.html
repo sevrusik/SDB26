@@ -158,6 +158,7 @@
         <li><a href="#measurement-grid">Measurement Grid</a></li>
         <li><a href="#attack-levels">Attack Levels</a></li>
         <li><a href="#audit-trails">Audit Trails</a></li>
+        <li><a href="#frc-a2a-schemas">FRC A2A Schemas</a></li>
         <li><a href="#reference-implementation">Reference Implementation</a></li>
         <li><a href="#why-now">Why Now</a></li>
       </ul>
@@ -207,9 +208,19 @@
               <td>Share of genuine cases flagged as suspicious/fraud</td>
               <td>Tracks customer/business impact</td>
             </tr>
+            <tr>
+              <td><strong>ABR</strong> / <strong>ACG</strong> <span class="muted">(v1.1 preview)</span></td>
+              <td>Agent bypass patterns; <strong>ACG</strong> uses envelope <code>compound_confidence</code> on joint approvals</td>
+              <td>Surfaces weak agent/instrumentation gating alongside document BR</td>
+            </tr>
+            <tr>
+              <td><strong>TCR</strong> / <strong>HAR</strong> <span class="muted">(v1.1 preview)</span></td>
+              <td>Tool-call coverage and handoff audit rates on agent-mediated flows</td>
+              <td>Whether logs reconstruct how the evidence package was built</td>
+            </tr>
           </tbody>
         </table>
-        <p class="muted">Reference: <code>STANDARD.md</code>, <code>METHODOLOGY.md</code>, <code>results_schema.json</code>.</p>
+        <p class="muted">Reference: <code>STANDARD.md</code> (§4.5 preview metrics), <code>METHODOLOGY.md</code>, <code>results_schema.json</code>.</p>
       </section>
 
       <section id="attack-levels">
@@ -228,16 +239,59 @@
 
       <section id="audit-trails">
         <h2>Audit Trails</h2>
-        <p>SDB-26 includes FRC and A2A artifacts for auditable decisions in agent-mediated workflows:</p>
+        <p>
+          SDB-26 includes FRC and the <strong>FRC A2A Extension</strong> (<code>docs/FRC_A2A_EXTENSION.md</code>, <strong>v0.5.2</strong>)
+          for auditable decisions across human-direct, agent-assisted, and managed-agent channels.
+        </p>
+        <p><strong>Core links</strong></p>
         <ul>
           <li><code>docs/FRC_OVERVIEW.md</code></li>
           <li><code>docs/FRC_A2A_EXTENSION.md</code></li>
           <li><code>docs/FRC_A2A_DEPLOYMENT_MAPPING.md</code></li>
         </ul>
+        <p><strong>Highlights in v0.5.2</strong></p>
+        <ul>
+          <li>
+            <strong>Compound routing</strong> combines document FRC with an <code>agent_verdict</code> posture, including
+            <strong>INSUFFICIENT × PARTIALLY_ATTESTED → REVIEW</strong> and
+            <strong>INSUFFICIENT × SUSPICIOUS → ESCALATE</strong>, with a decision tree so a bad capture plus a risky agent path is not reduced to “upload again”.
+          </li>
+          <li>
+            <strong>Normative L0 → agent_verdict mapping</strong> so <code>PARTIALLY_ATTESTED</code> is not an informal catch-all.
+          </li>
+          <li>
+            <strong>Confidence split:</strong> <code>verdict_confidence</code> (core payload) = document layer only;
+            <code>compound_confidence</code> (envelope) = joint <code>compound_verdict</code>; published composition IDs (<code>CC_MIN</code> / <code>CC_DOC_ONLY</code> / <code>CC_CUSTOM</code>) support comparable benchmarks.
+          </li>
+          <li>
+            <strong>A2A Protocol alignment:</strong> optional <code>a2a_correlation</code> and
+            <code>schemas/a2a_v1_surfaces.json</code> follow formal Task / TaskState shapes from the
+            <a href="https://a2a-protocol.org/latest/specification/" target="_blank" rel="noopener noreferrer">Agent2Agent (A2A) specification</a>.
+          </li>
+          <li>
+            <strong>Threat model</strong> adds <strong>T6</strong> (shadow connector /
+            <code>FRC-L0-CONNECTOR-OUT-OF-POLICY</code>) and <strong>T7</strong> (opaque secret–workload binding /
+            <code>FRC-L0-SECRET-BINDING-UNKNOWN</code>).
+          </li>
+        </ul>
         <p>
-          This bridges document-level authenticity with agent-era traceability
-          (<code>instrumentation_trace</code>, L0/L0-D signals, ABR/TCR/HAR-style controls).
+          Together this bridges document authenticity to agent-era traceability
+          (<code>instrumentation_trace</code>, L0/L0-D, ABR / ACG / TCR / HAR where applicable).
         </p>
+      </section>
+
+      <section id="frc-a2a-schemas">
+        <h2>FRC A2A Schemas</h2>
+        <p>Machine-validatable artifacts:</p>
+        <ul>
+          <li><code>schemas/frc_schema_v1_0_0.json</code> — document-layer FRC.</li>
+          <li>
+            <code>schemas/frc_a2a_envelope_v0_2_0.json</code> — audit envelope
+            (<code>agent_verdict</code>, <code>compound_verdict</code>, <code>compound_confidence</code>, optional <code>agent_layer_confidence</code>, <code>a2a_correlation</code>).
+          </li>
+          <li><code>schemas/a2a_v1_surfaces.json</code> — A2A type surfaces for correlation fields.</li>
+          <li><code>examples/frc/</code>, <code>scripts/validate_frc_schemas.py</code> — examples and validation.</li>
+        </ul>
       </section>
 
       <section id="reference-implementation">
@@ -256,8 +310,7 @@
         <ul>
           <li><code>examples/frc/</code></li>
           <li><code>tests/frc/</code></li>
-          <li><code>schemas/frc_schema_v1_0_0.json</code></li>
-          <li><code>schemas/frc_a2a_envelope_v0_2_0.json</code></li>
+          <li><code>CHANGELOG.md</code> — FRC A2A v0.5.1 / v0.5.2 and related schema notes.</li>
         </ul>
       </section>
 
