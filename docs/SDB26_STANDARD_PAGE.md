@@ -68,6 +68,22 @@ This bridges document-level authenticity to **agent-era traceability** (`instrum
 
 ---
 
+## Responsible Release
+
+SDB-26 is published as a **defender-oriented benchmark**.
+
+Public materials are intentionally limited to taxonomy, measurement contracts, schema surfaces, and redacted examples that improve defensive evaluation quality.
+
+Operational evasion playbooks and attack-enabling parameter detail are intentionally excluded from open artifacts.
+
+Policy and release boundaries:
+
+- `docs/RESPONSIBLE_RELEASE_POLICY.md`
+- `examples/l2e/` (redacted fixture examples only)
+- `schemas/l2e_fixture_schema_v0_1_0.json`
+
+---
+
 ## Reference Implementation
 
 Practical implementation path:

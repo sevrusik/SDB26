@@ -13,6 +13,14 @@
 - `FRC-L2-FONT-INCONSISTENCY` — rendering/kerning inconsistencies indicating insertion.
 - `FRC-L2-METADATA-WIPE` — metadata absent/reset or generic editor signatures (never sole reject reason).
 
+### L2E-focused extensions (advanced post-processing/evasion)
+
+- `FRC-L2-DCT-DOUBLE-COMP-ANOMALY` — DCT statistics indicate recompression chain anomalies (single vs double compression inconsistency).
+- `FRC-L2-ELA-LOCAL-DIVERGENCE` — local/zonal ELA divergence indicates targeted blending or patch-level post-processing.
+- `FRC-L2-PHASE-INCOHERENCE` — phase coherence mismatch despite plausible magnitude envelopes in frequency domain.
+- `FRC-L2-INTERCHANNEL-NOISE-MISMATCH` — inter-channel noise correlation inconsistent with natural capture pipeline.
+- `FRC-L2-SEMANTIC-TEXTURE-INCONSISTENCY` — semantic-texture mismatch surviving relaundering pipelines.
+
 ## L3 — Screen recapture attacks
 
 - `FRC-L3-MOIRE-PATTERN` — moire interference consistent with display recapture.

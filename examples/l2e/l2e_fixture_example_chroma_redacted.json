@@ -1,0 +1,23 @@
+{
+  "fixture_id": "L2E-FIX-0001",
+  "attack_level": "L2",
+  "attack_stratum": "L2E",
+  "attack_subclass": "L2E1_CHROMA_REENCODE",
+  "parent_id": "L2G-SRC-1042",
+  "source_file": "corpus/l2/source/L2G-SRC-1042.jpg",
+  "derived_file": "corpus/l2e/derived/L2E-FIX-0001.jpg",
+  "transformation": {
+    "family": "chroma_reencode",
+    "parameter_profile": "redacted_public_release",
+    "notes": "Operational parameter values intentionally omitted."
+  },
+  "forensic_expectations": [
+    "FRC-L2-DCT-DOUBLE-COMP-ANOMALY"
+  ],
+  "ground_truth": {
+    "sdb26_class": "EDITED",
+    "attack_level": "L2"
+  },
+  "collected_at": "2026-05-07T16:10:00Z",
+  "notes": "Public example fixture for schema and lineage illustration."
+}

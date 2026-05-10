@@ -9,6 +9,52 @@ Format follows [Semantic Versioning](https://semver.org/):
 
 ---
 
+## [1.0.12] — May 2026
+
+**Responsible release controls + redacted L2E fixture templates.**
+
+### Added
+- `docs/RESPONSIBLE_RELEASE_POLICY.md` — Public/Restricted/Private release model and dual-use hygiene rules.
+- `schemas/l2e_fixture_schema_v0_1_0.json` — schema template for L2E fixture metadata, including `attack_subclass` and `parent_id`.
+- `examples/l2e/README.md` + two redacted examples:
+  - `examples/l2e/l2e_fixture_example_chroma_redacted.json`
+  - `examples/l2e/l2e_fixture_example_relaunder_redacted.json`
+
+### Changed
+- `README.md` updated with policy link, L2E schema listing, and redacted example fixture directory.
+- `STANDARD.md` legal section now references the responsible release policy and defender-oriented publication boundary.
+
+---
+
+## [1.0.11] — May 2026
+
+**L2 Level split (L2G/L2E) + taxonomy for post-processing evasion attempts.**
+
+### Added
+- `STANDARD.md` Section 3.1: explicit **L2 split** into `L2G` (generation/editing) and `L2E` (evasion/post-processing), both normative within Level 2.
+- `STANDARD.md` Section 3.1: **Level 2E (L2E)** subclasses for advanced post-processing/evasion attempts:
+  - `L2E1_CHROMA_REENCODE`
+  - `L2E2_AUTHENTIC_BLEND`
+  - `L2E3_FFT_ENVELOPE_TRANSPLANT`
+  - `L2E4_CFA_REMOSAIC`
+  - `L2E5_RELAUNDER_IMG2IMG`
+- Normative L2E corpus rules: subclass labels, pre/post lineage recommendation, parameter capture, and minimum sample guidance.
+- `docs/FRC_CODEBOOK.md`: L2E-oriented FRC additions:
+  - `FRC-L2-DCT-DOUBLE-COMP-ANOMALY`
+  - `FRC-L2-ELA-LOCAL-DIVERGENCE`
+  - `FRC-L2-PHASE-INCOHERENCE`
+  - `FRC-L2-INTERCHANNEL-NOISE-MISMATCH`
+  - `FRC-L2-SEMANTIC-TEXTURE-INCONSISTENCY`
+
+### Changed
+- `STANDARD.md` §4.1 BR reporting requirements expanded with Level 2E slices:
+  - `BR_L2E_total`
+  - `BR_L2E_by_subclass`
+  - `BR_L2E_worst_subclass`
+- `README.md` Level 2 description now explicitly includes the L2G/L2E split and links to corresponding BR reporting fields.
+
+---
+
 ## [1.0.10] — May 2026
 
 **FRC A2A Extension v0.5.2 — INSUFFICIENT compound rows, decision tree, threat T6/T7.**

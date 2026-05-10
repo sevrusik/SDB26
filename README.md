@@ -68,6 +68,9 @@ Advanced extension draft for agent-to-agent contexts:
 Implementation note — how SDB-26 maps onto ENISA *Secure by Design and Default* (consultation playbook):
 - [docs/SDB26_ENISA_SecureByDesign_Mapping_v0.1.md](docs/SDB26_ENISA_SecureByDesign_Mapping_v0.1.md)
 
+Responsible release and dual-use policy:
+- [docs/RESPONSIBLE_RELEASE_POLICY.md](docs/RESPONSIBLE_RELEASE_POLICY.md)
+
 ---
 
 ## Three Levels of Synthetic Complexity
@@ -75,8 +78,14 @@ Implementation note — how SDB-26 maps onto ENISA *Secure by Design and Default
 | Level | Name | Description |
 |-------|------|-------------|
 | L1 | Standard Generation | DALL-E 3, Midjourney, SD XL, ChatGPT Image 2, Seedream 5 Lite, Kling O1 Image, Flux 2 — no post-processing |
-| L2 | Advanced Diffusion | Fine-tuned models, metadata injection |
+| L2 | Advanced Diffusion | Split into **L2G** (generation/editing complexity) and **L2E** (post-processing evasion strata) |
 | L3 | Screenshot Attack | Any L1/L2 document captured via screenshot — bypasses C2PA |
+
+L2 includes normative split:
+- **L2G:** generation/editing-focused advanced diffusion cases
+- **L2E:** adversarial post-processing attempts with subclasses:
+`L2E1_CHROMA_REENCODE`, `L2E2_AUTHENTIC_BLEND`, `L2E3_FFT_ENVELOPE_TRANSPLANT`, `L2E4_CFA_REMOSAIC`, `L2E5_RELAUNDER_IMG2IMG`.
+See `STANDARD.md` Section 3.1 and BR reporting requirements in Section 4.1 (`BR_L2E_total`, `BR_L2E_by_subclass`, `BR_L2E_worst_subclass`).
 
 ---
 
@@ -128,15 +137,18 @@ SDB-26/
 │   ├── FRC_ACTION_MATRIX.md
 │   ├── FRC_TECHNICAL_REFERENCE.md
 │   ├── FRC_A2A_EXTENSION.md
-│   └── SDB26_ENISA_SecureByDesign_Mapping_v0.1.md  — ENISA SbD playbook mapping (v0.1)
+│   ├── SDB26_ENISA_SecureByDesign_Mapping_v0.1.md  — ENISA SbD playbook mapping (v0.1)
+│   └── RESPONSIBLE_RELEASE_POLICY.md               — dual-use release policy
 ├── schemas/
 │   ├── frc_schema_v1_0_0.json
-│   └── frc_a2a_envelope_v0_2_0.json
+│   ├── frc_a2a_envelope_v0_2_0.json
+│   └── l2e_fixture_schema_v0_1_0.json
 ├── scripts/
 │   └── validate_frc_schemas.py   — CI: validates tests/frc + examples/frc
 ├── requirements-dev.txt          — jsonschema (for the validator script)
 ├── examples/
-│   └── frc/
+│   ├── frc/
+│   └── l2e/                       — redacted L2E fixture examples
 └── tests/
     └── frc/
 ```
@@ -176,6 +188,7 @@ It does not include:
 - client data,
 - institution-specific calibration thresholds,
 - production scoring weights or anti-evasion operational playbooks.
+- unrestricted operational L2E transformation parameter sets.
 
 Forensic outputs are probabilistic indicators, not legal determinations.
 

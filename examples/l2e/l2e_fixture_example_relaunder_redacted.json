@@ -1,0 +1,23 @@
+{
+  "fixture_id": "L2E-FIX-0002",
+  "attack_level": "L2",
+  "attack_stratum": "L2E",
+  "attack_subclass": "L2E5_RELAUNDER_IMG2IMG",
+  "parent_id": "L2G-SRC-2088",
+  "source_file": "corpus/l2/source/L2G-SRC-2088.png",
+  "derived_file": "corpus/l2e/derived/L2E-FIX-0002.png",
+  "transformation": {
+    "family": "img2img_relaunder",
+    "parameter_profile": "redacted_public_release",
+    "notes": "Operational denoise/pass settings intentionally omitted."
+  },
+  "forensic_expectations": [
+    "FRC-L2-SEMANTIC-TEXTURE-INCONSISTENCY"
+  ],
+  "ground_truth": {
+    "sdb26_class": "EDITED",
+    "attack_level": "L2"
+  },
+  "collected_at": "2026-05-07T16:11:00Z",
+  "notes": "Public example fixture for non-operational interoperability."
+}

@@ -70,7 +70,11 @@ Documents produced by general-purpose image generation models without post-proce
 
 #### Level 2 — Advanced Diffusion
 
-Documents produced by fine-tuned or specialised generation pipelines with metadata injection.
+Level 2 is split into:
+- **L2G (Generation-focused):** fine-tuned or specialised generation/editing pipelines.
+- **L2E (Evasion-focused):** post-processing attempts intended to suppress detector signals while preserving visual plausibility.
+
+Both strata are part of Level 2 reporting.
 
 | Parameter | Specification |
 |-----------|--------------|
@@ -80,6 +84,29 @@ Documents produced by fine-tuned or specialised generation pipelines with metada
 | Post-processing | Metadata injection permitted (camera model, timestamp, device info) |
 | Resolution | Minimum 512×512 pixels |
 | Format | JPEG with injected EXIF |
+
+##### Level 2G — Generation/Editing stratum (normative within L2)
+
+L2G includes generation-time and editing-time complexity without dedicated anti-detector laundering objectives.
+
+##### Level 2E — Evasion/Post-processing Taxonomy (normative strata)
+
+Level 2 evaluations MUST include evasive post-processing strata. These are measured as part of L2 (reported separately as L2E slices; see Section 4.1).
+
+| L2E ID | Transformation family | Forensic target under test | Minimum corpus rule |
+|--------|------------------------|----------------------------|---------------------|
+| `L2E1_CHROMA_REENCODE` | JPEG chroma/subsampling + re-encode chains | Single vs double compression separability in DCT statistics | Include pre/post pairs with quality and subsampling parameters |
+| `L2E2_AUTHENTIC_BLEND` | Low-alpha blend with genuine camera captures | Zonal/local anomaly detection vs global-only ELA behavior | Include alpha schedule and source-control IDs |
+| `L2E3_FFT_ENVELOPE_TRANSPLANT` | Frequency magnitude envelope transplant (e.g., LAB-L) | Phase coherence sensitivity vs magnitude-only reliance | Preserve phase/magnitude processing metadata |
+| `L2E4_CFA_REMOSAIC` | CFA/Bayer remosaic or demosaic-reencode variants | Inter-channel noise correlation consistency beyond Bayer pattern presence | Store channel-noise summary features with transform parameters |
+| `L2E5_RELAUNDER_IMG2IMG` | Low-denoise img2img relaundering pipelines | Semantic-texture consistency gaps that survive relaundering | Record model family, denoise strength, and pass count |
+
+Normative collection requirements for L2E:
+- L2E samples MUST be labeled with `attack_subclass` = one of the IDs above.
+- L2E samples SHOULD preserve pre/post lineage (`parent_id`) to support pairwise analysis.
+- Per L2E subclass, minimum sample target is 100 files for published benchmark-grade claims. If fewer are available, report as exploratory and disclose `n`.
+- Transformation parameters MUST be captured in the corpus packet metadata (see methodology/forensic packet guidance).
+- Recommended FRC mapping for L2E forensic findings (document layer): `FRC-L2-DCT-DOUBLE-COMP-ANOMALY`, `FRC-L2-ELA-LOCAL-DIVERGENCE`, `FRC-L2-PHASE-INCOHERENCE`, `FRC-L2-INTERCHANNEL-NOISE-MISMATCH`, `FRC-L2-SEMANTIC-TEXTURE-INCONSISTENCY`.
 
 #### Level 3 — Screenshot Attack
 
@@ -133,6 +160,10 @@ Where:
 - BR must be reported per document type
 - BR must be reported per generator (Generator Sensitivity)
 - Overall BR across all levels must be reported
+- For Level 2, BR MUST additionally be reported for L2E aggregate and each L2E subclass where `n >= 20`:
+  - `BR_L2E_total`
+  - `BR_L2E_by_subclass[L2E1..L2E5]`
+  - `BR_L2E_worst_subclass` (max subclass BR in the evaluation window)
 
 ### 4.2 Confidence Gap (CG)
 
@@ -327,6 +358,9 @@ SDB-26 methodology is published under Creative Commons Attribution 4.0 Internati
 The test corpus is not included in this license. Corpus access is provided to verified organisations under separate terms.
 
 Use of the name "SDB-26" to describe non-compliant evaluations or modified methodologies is not permitted.
+
+Dual-use release posture for this benchmark is defined in `docs/RESPONSIBLE_RELEASE_POLICY.md`.  
+Public materials are defender-oriented; operational evasion details are intentionally excluded from open release.
 
 ---
 
